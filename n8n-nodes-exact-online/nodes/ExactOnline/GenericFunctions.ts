@@ -67,9 +67,14 @@ export async function getData(this: IExecuteFunctions | IExecuteSingleFunctions 
 	): Promise<IDataObject[]> {
 		console.log(resource);
 		console.log(qs);
-		const responseData = await exactOnlineApiRequest.call(this, 'GET', `${resource}`,body,qs);
+		const responseData = await exactOnlineApiRequest.call(this, 'GET', `${resource}`,body,qs,option);
+		if(responseData.body.d.results){
+			return responseData.body.d.results;
+		}
+		else{
+			return responseData.body.d;
+		}
 
-		return responseData.body.d.results;
 }
 
 
