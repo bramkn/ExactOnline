@@ -7,7 +7,7 @@ import {
 	INodeTypeDescription,
 	NodeOperationError,
 } from 'n8n-workflow';
-import { exactOnlineApiRequest, getCurrentDivision, getData, getResourceOptions, toDivisionOptions, toOptions } from './GenericFunctions';
+import { exactOnlineApiRequest, getAllData, getCurrentDivision, getData, getResourceOptions, toDivisionOptions, toOptions } from './GenericFunctions';
 import { LoadedDivision, LoadedOptions } from './types';
 
 export class ExactOnline implements INodeType {
@@ -101,6 +101,20 @@ export class ExactOnline implements INodeType {
 					},
 				}
 			},
+			{
+				displayName: 'Limit',
+				name: 'limit',
+				type: 'number',
+				default: 60,
+				description: 'Limit the number of records retrieved.',
+				displayOptions:{
+					show:	{
+						operation: [
+							'getAll',
+						],
+					},
+				}
+			},
 		],
 	};
 
@@ -153,7 +167,8 @@ export class ExactOnline implements INodeType {
 					}
 				}
 				if(operation ==='getAll'){
-					responseData = await getData.call(this, `${division}/${service}/${resource}`,{},{});
+					const limit = this.getNodeParameter('limit', itemIndex, 0) as number;
+					responseData = await getAllData.call(this, `${division}/${service}/${resource}`,limit,{},{});
 					returnData = returnData.concat(responseData);
 				}
 

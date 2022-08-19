@@ -18,6 +18,7 @@ export async function exactOnlineApiRequest(
 	body: IDataObject = {},
 	qs: IDataObject = {},
 	option: IDataObject = {},
+	nextPageUrl: string = '',
 	// tslint:disable-next-line:no-any
 ): Promise<any> {
 	const credentials = await this.getCredentials('exactOnline');
@@ -33,6 +34,9 @@ export async function exactOnlineApiRequest(
 		//@ts-ignore
 		resolveWithFullResponse: true,
 	};
+	if(nextPageUrl!==''){
+		options.uri = nextPageUrl;
+	}
 	options = Object.assign({}, options, option);
 
 	try {
@@ -74,6 +78,40 @@ export async function getData(this: IExecuteFunctions | IExecuteSingleFunctions 
 		else{
 			return responseData.body.d;
 		}
+
+}
+
+export async function getAllData(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
+	resource: string,
+	limit: number = 60,
+	body: IDataObject = {},
+	qs: IDataObject = {},
+	option: IDataObject = {},
+	): Promise<IDataObject[]> {
+		console.log(resource);
+		console.log(qs);
+		let returnData:IDataObject[] = [];
+		let responseData;
+		let nextPageUrl = '';
+		do {
+			if(nextPageUrl === ''){
+				responseData = await exactOnlineApiRequest.call(this, 'GET', `${resource}`,body,qs,option);
+			}
+			else{
+				responseData = await exactOnlineApiRequest.call(this, 'GET', `${resource}`,body,qs,option,nextPageUrl);
+			}
+
+			if(responseData.body.d.results){
+				returnData = returnData.concat(responseData.body.d.results);
+			}
+			else{
+				returnData = returnData.concat(responseData.body.d);
+			}
+			nextPageUrl = responseData.body.d.__next;
+
+		} while ((limit === 0 || returnData.length < limit) && responseData.body.d.__next);
+
+		return returnData;
 
 }
 
