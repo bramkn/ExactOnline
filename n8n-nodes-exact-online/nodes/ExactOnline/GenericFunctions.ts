@@ -8,6 +8,7 @@ import {
 } from 'n8n-core';
 
 import { IDataObject, IOAuth2Options, NodeApiError } from 'n8n-workflow';
+import { LoadedDivision } from './types';
 
 export async function exactOnlineApiRequest(
 	this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
@@ -28,6 +29,8 @@ export async function exactOnlineApiRequest(
 		qs,
 		uri: `${credentials.url}/api/v1/${resource}`,
 		json: true,
+		//@ts-ignore
+		resolveWithFullResponse: true,
 	};
 	options = Object.assign({}, options, option);
 
@@ -41,10 +44,18 @@ export async function exactOnlineApiRequest(
 		};
 
 		//@ts-ignore
-		return await this.helpers.requestOAuth2.call(this, 'exactOnline', options, oAuth2Options);
+		const response = await this.helpers.requestOAuth2.call(this, 'exactOnline', options, oAuth2Options);
+		//@ts-ignore
+		return response;
 	} catch (error) {
 		throw new NodeApiError(this.getNode(), error);
 	}
+}
+
+export async function getCurrentDivision(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
+	): Promise<string> {
+		const responseData = await exactOnlineApiRequest.call(this, 'GET', `current/Me?$select=CurrentDivision`);
+		return responseData.body.d.results[0].CurrentDivision;
 }
 /*
 export async function boxApiRequestAllItems(
@@ -70,3 +81,7 @@ export async function boxApiRequestAllItems(
 
 	return returnData;
 }*/
+
+
+export const toDivisionOptions = (items: LoadedDivision[]) =>
+	items.map(({ Code, CustomerName, Description }) => ({ name: `${CustomerName} : ${Description}`, value: Code }));

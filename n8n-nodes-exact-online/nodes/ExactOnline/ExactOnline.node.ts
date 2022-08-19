@@ -1,12 +1,14 @@
 import { IExecuteFunctions } from 'n8n-core';
 import {
 	IDataObject,
+	ILoadOptionsFunctions,
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
 	NodeOperationError,
 } from 'n8n-workflow';
-import { exactOnlineApiRequest } from './GenericFunctions';
+import { exactOnlineApiRequest, getCurrentDivision, toDivisionOptions } from './GenericFunctions';
+import { LoadedDivision } from './types';
 
 export class ExactOnline implements INodeType {
 	description: INodeTypeDescription = {
@@ -28,6 +30,16 @@ export class ExactOnline implements INodeType {
 			},
 		],
 		properties: [
+			{
+				displayName: 'Division',
+				name: 'division',
+				type: 'options',
+				typeOptions: {
+					loadOptionsMethod: 'getDivisions',
+				},
+				default: '',
+				description: 'Division to get data from.',
+			},
 			// Node properties which the user gets displayed and
 			// can change on the node.
 			{
@@ -39,6 +51,19 @@ export class ExactOnline implements INodeType {
 				description: 'The description text',
 			},
 		],
+	};
+
+	methods = {
+		loadOptions: {
+			async getDivisions(this: ILoadOptionsFunctions) {
+
+				const currentDivision = await getCurrentDivision.call(this);
+				const divisions = await exactOnlineApiRequest.call(this,'GET', `${currentDivision}/system/Divisions`);
+
+				return toDivisionOptions(divisions.body.d.results as LoadedDivision[]);
+			},
+
+		},
 	};
 
 	// The function below is responsible for actually doing whatever this node
