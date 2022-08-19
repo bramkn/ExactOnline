@@ -8,7 +8,8 @@ import {
 } from 'n8n-core';
 
 import { IDataObject, IOAuth2Options, NodeApiError } from 'n8n-workflow';
-import { LoadedDivision } from './types';
+import { LoadedDivision, LoadedOptions } from './types';
+import { accountancyEndpoints, crmEndpoints } from './endpointDescription';
 
 export async function exactOnlineApiRequest(
 	this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
@@ -57,31 +58,35 @@ export async function getCurrentDivision(this: IExecuteFunctions | IExecuteSingl
 		const responseData = await exactOnlineApiRequest.call(this, 'GET', `current/Me?$select=CurrentDivision`);
 		return responseData.body.d.results[0].CurrentDivision;
 }
-/*
-export async function boxApiRequestAllItems(
-	this: IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions,
-	propertyName: string,
-	method: string,
-	endpoint: string,
-	// tslint:disable-next-line:no-any
-	body: any = {},
-	query: IDataObject = {},
-	// tslint:disable-next-line:no-any
-): Promise<any> {
-	const returnData: IDataObject[] = [];
 
-	let responseData;
-	query.limit = 100;
-	query.offset = 0;
-	do {
-		responseData = await boxApiRequest.call(this, method, endpoint, body, query);
-		query.offset = responseData['offset'] + query.limit;
-		returnData.push.apply(returnData, responseData[propertyName]);
-	} while (responseData[propertyName].length !== 0);
+export async function getData(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
+	resource: string,
+	body: IDataObject = {},
+	qs: IDataObject = {},
+	option: IDataObject = {},
+	): Promise<IDataObject[]> {
+		console.log(resource);
+		console.log(qs);
+		const responseData = await exactOnlineApiRequest.call(this, 'GET', `${resource}`,body,qs);
 
-	return returnData;
-}*/
+		return responseData.body.d.results;
+}
+
+
+export async function getResourceOptions(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,service:string){
+
+	switch(service){
+		case 'accountancy':
+			return accountancyEndpoints;
+		case 'crm':
+			return crmEndpoints;
+	}
+}
+
 
 
 export const toDivisionOptions = (items: LoadedDivision[]) =>
 	items.map(({ Code, CustomerName, Description }) => ({ name: `${CustomerName} : ${Description}`, value: Code }));
+
+export const toOptions = (items: LoadedOptions[]) =>
+	items.map(({ value, name }) => ({ name: name, value: value }));

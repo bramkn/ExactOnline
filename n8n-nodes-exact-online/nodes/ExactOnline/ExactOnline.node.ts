@@ -7,8 +7,8 @@ import {
 	INodeTypeDescription,
 	NodeOperationError,
 } from 'n8n-workflow';
-import { exactOnlineApiRequest, getCurrentDivision, toDivisionOptions } from './GenericFunctions';
-import { LoadedDivision } from './types';
+import { exactOnlineApiRequest, getCurrentDivision, getData, getResourceOptions, toDivisionOptions, toOptions } from './GenericFunctions';
+import { LoadedDivision, LoadedOptions } from './types';
 
 export class ExactOnline implements INodeType {
 	description: INodeTypeDescription = {
@@ -43,12 +43,63 @@ export class ExactOnline implements INodeType {
 			// Node properties which the user gets displayed and
 			// can change on the node.
 			{
+				displayName: 'Service',
+				name: 'service',
+				type: 'options',
+				options:[
+					{
+						name:'Accountancy',
+						value:'accountancy'
+					},
+					{
+						name:'CRM',
+						value:'crm'
+					},
+				],
+				default: '',
+				description: 'Service category for easy filtering.',
+			},
+			{
 				displayName: 'Resource',
 				name: 'resource',
+				type: 'options',
+				typeOptions: {
+					loadOptionsDependsOn:['service'],
+					loadOptionsMethod: 'getResources',
+				},
+				default: '',
+				description: 'Resource to connect to.',
+			},
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				options:[
+					{
+						name:'Get',
+						value:'get'
+					},
+					{
+						name:'Get all',
+						value:'getAll'
+					},
+				],
+				default: '',
+				description: 'Operation to use.',
+			},
+			{
+				displayName: 'Id',
+				name: 'id',
 				type: 'string',
 				default: '',
-				placeholder: 'Placeholder value',
-				description: 'The description text',
+				description: 'Id of record.',
+				displayOptions:{
+					show:	{
+						operation: [
+							'get',
+						],
+					},
+				}
 			},
 		],
 	};
@@ -63,6 +114,13 @@ export class ExactOnline implements INodeType {
 				return toDivisionOptions(divisions.body.d.results as LoadedDivision[]);
 			},
 
+			async getResources(this: ILoadOptionsFunctions) {
+				const service = this.getNodeParameter('service', 0) as string;
+				const resources = await getResourceOptions.call(this,service);
+
+				return toOptions(resources as LoadedOptions[]);
+			},
+
 		},
 	};
 
@@ -72,19 +130,34 @@ export class ExactOnline implements INodeType {
 	// You can make async calls and use `await`.
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
-		const returnData: IDataObject[] = [];
+		let returnData: IDataObject[] = [];
 		const length = items.length;
 		const qs: IDataObject = {};
 
 		let responseData;
+		const division = this.getNodeParameter('division', 0) as string;
+		const service = this.getNodeParameter('service', 0) as string;
 		const resource = this.getNodeParameter('resource', 0) as string;
+		const operation = this.getNodeParameter('operation', 0) as string;
+
 
 		for (let itemIndex = 0; itemIndex < length; itemIndex++) {
 			try {
+				if(operation === 'get'){
+					const id = this.getNodeParameter('id', itemIndex, '') as string;
+					if(id!==''){
+						qs['$filter'] = `ID eq guid'${id}'`;
+						qs['$top'] = 1;
+						responseData = await getData.call(this, `${division}/${service}/${resource}`,{},qs);
+						returnData = returnData.concat(responseData);
+					}
+				}
+				if(operation ==='getAll'){
+					responseData = await getData.call(this, `${division}/${service}/${resource}`,{},{});
+					returnData = returnData.concat(responseData);
+				}
 
 
-				responseData = await exactOnlineApiRequest.call(this, 'GET', `${resource}`);
-				returnData.push(responseData as IDataObject);
 
 
 			} catch (error) {
