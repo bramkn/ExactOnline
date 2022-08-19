@@ -59,6 +59,10 @@ export class ExactOnline implements INodeType {
 						name:'Financial',
 						value:'financial'
 					},
+					{
+						name:'Financial Transaction',
+						value:'financialtransaction'
+					},
 				],
 				default: '',
 				description: 'Service category for easy filtering.',

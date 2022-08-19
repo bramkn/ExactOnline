@@ -163,3 +163,27 @@ export const financialEndpoints = [
 		value: 'ReportingBalance',
 	},
 ];
+
+
+export const financialTransactionEndpoints = [
+	{
+		name: 'BankEntries',
+		value: 'BankEntries',
+	},
+	{
+			name: 'BankEntryLines',
+			value: 'BankEntryLines',
+	},
+	{
+			name: 'CashEntries',
+			value: 'CashEntries',
+	},
+	{
+			name: 'CashEntryLines',
+			value: 'CashEntryLines',
+	},
+	{
+			name: 'TransactionLines',
+			value: 'TransactionLines',
+	},
+];

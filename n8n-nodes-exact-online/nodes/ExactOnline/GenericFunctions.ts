@@ -9,7 +9,7 @@ import {
 
 import { IDataObject, IOAuth2Options, NodeApiError } from 'n8n-workflow';
 import { LoadedDivision, LoadedOptions } from './types';
-import { accountancyEndpoints, crmEndpoints, financialEndpoints } from './endpointDescription';
+import { accountancyEndpoints, crmEndpoints, financialEndpoints, financialTransactionEndpoints } from './endpointDescription';
 
 export async function exactOnlineApiRequest(
 	this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
@@ -127,6 +127,8 @@ export async function getResourceOptions(this: IExecuteFunctions | IExecuteSingl
 			return crmEndpoints;
 		case 'financial':
 			return financialEndpoints;
+		case 'financialtransaction':
+			return financialTransactionEndpoints;
 	}
 }
 
