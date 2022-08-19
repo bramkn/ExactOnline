@@ -9,7 +9,7 @@ import {
 
 import { IDataObject, IOAuth2Options, NodeApiError } from 'n8n-workflow';
 import { LoadedDivision, LoadedOptions } from './types';
-import { accountancyEndpoints, crmEndpoints } from './endpointDescription';
+import { accountancyEndpoints, crmEndpoints, financialEndpoints } from './endpointDescription';
 
 export async function exactOnlineApiRequest(
 	this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
@@ -110,7 +110,9 @@ export async function getAllData(this: IExecuteFunctions | IExecuteSingleFunctio
 			nextPageUrl = responseData.body.d.__next;
 
 		} while ((limit === 0 || returnData.length < limit) && responseData.body.d.__next);
-
+		if(limit !== 0){
+			return returnData.slice(0,limit);
+		}
 		return returnData;
 
 }
@@ -123,6 +125,8 @@ export async function getResourceOptions(this: IExecuteFunctions | IExecuteSingl
 			return accountancyEndpoints;
 		case 'crm':
 			return crmEndpoints;
+		case 'financial':
+			return financialEndpoints;
 	}
 }
 

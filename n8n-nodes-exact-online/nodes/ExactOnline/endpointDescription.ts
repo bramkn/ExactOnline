@@ -111,3 +111,55 @@ export const crmEndpoints = [
 		value: 'ReviewQuotation',
 	},
 ];
+
+
+export const financialEndpoints = [
+	{
+		name: 'DeductibilityPercentages',
+		value: 'DeductibilityPercentages',
+	},
+	{
+		name: 'ExchangeRates',
+		value: 'ExchangeRates',
+	},
+	{
+		name: 'FinancialPeriods',
+		value: 'FinancialPeriods',
+	},
+	{
+		name: 'GLAccountClassificationMappings',
+		value: 'GLAccountClassificationMappings',
+	},
+	{
+		name: 'GLAccounts',
+		value: 'GLAccounts',
+	},
+	{
+		name: 'GLClassifications',
+		value: 'GLClassifications',
+	},
+	{
+		name: 'GLSchemes',
+		value: 'GLSchemes',
+	},
+	{
+		name: 'GLTransactionSources',
+		value: 'GLTransactionSources',
+	},
+	{
+		name: 'GLTransactionTypes',
+		value: 'GLTransactionTypes',
+	},
+	{
+		name: 'Journals',
+		value: 'Journals',
+	},
+	{
+		name: 'OfficialReturns',
+		value: 'OfficialReturns',
+	},
+	{
+		name: 'ReportingBalance',
+		value: 'ReportingBalance',
+	},
+];
