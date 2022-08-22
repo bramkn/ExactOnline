@@ -11,3 +11,11 @@ export type LoadedOptions = {
 export type LoadedFields = {
 	name:string,
 }
+
+
+export type endpointConfiguration = {
+	displayName:string,
+	name:string,
+	type:string,
+	description:string
+}

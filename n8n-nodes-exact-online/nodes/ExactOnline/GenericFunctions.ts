@@ -8,8 +8,9 @@ import {
 } from 'n8n-core';
 
 import { IDataObject, IOAuth2Options, NodeApiError } from 'n8n-workflow';
-import { LoadedDivision, LoadedFields, LoadedOptions } from './types';
+import { endpointConfiguration, LoadedDivision, LoadedFields, LoadedOptions } from './types';
 import { accountancyEndpoints, crmEndpoints, financialEndpoints, financialTransactionEndpoints } from './endpointDescription';
+import { fieldsFinancialTransaction } from './endpointFieldsDescriptions/FinancialTransactionDescription';
 
 export async function exactOnlineApiRequest(
 	this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
@@ -119,6 +120,7 @@ export async function getFields(this: IExecuteFunctions | IExecuteSingleFunction
 		const qs:IDataObject = {};
 		qs['$top']=1;
 		const responseData = await getData.call(this, `${resource}`,{},qs);
+
 		const fields = Object.keys(responseData[0]);
 		return fields.filter(x=>x.substring(0,2)!=='__');
 
@@ -139,6 +141,17 @@ export async function getResourceOptions(this: IExecuteFunctions | IExecuteSingl
 	}
 }
 
+export async function getEndpointFieldConfig(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
+	service:string,
+	endpoint:string){
+		switch(service){
+			case 'financialtransaction':
+				return fieldsFinancialTransaction.filter(x => x.endpoint===endpoint)[0].fields;
+		}
+
+	return null;
+
+}
 
 
 export const toDivisionOptions = (items: LoadedDivision[]) =>
@@ -149,3 +162,6 @@ export const toOptions = (items: LoadedOptions[]) =>
 
 export const toFieldSelectOptions = (items: LoadedFields[]) =>
 	items.map(({ name }) => ({ name: name, value: name }));
+
+export const toFieldFilterOptions = (items: endpointConfiguration[]) =>
+items.map(({ name }) => ({ name: name, value: name }));

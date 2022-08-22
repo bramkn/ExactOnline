@@ -7,8 +7,8 @@ import {
 	INodeTypeDescription,
 	NodeOperationError,
 } from 'n8n-workflow';
-import { exactOnlineApiRequest, getAllData, getCurrentDivision, getData, getFields, getResourceOptions, toDivisionOptions, toFieldSelectOptions, toOptions } from './GenericFunctions';
-import { LoadedDivision, LoadedFields, LoadedOptions } from './types';
+import { exactOnlineApiRequest, getAllData, getCurrentDivision, getData, getEndpointFieldConfig, getFields, getResourceOptions, toDivisionOptions, toFieldFilterOptions, toFieldSelectOptions, toOptions } from './GenericFunctions';
+import { endpointConfiguration, LoadedDivision, LoadedFields, LoadedOptions } from './types';
 
 export class ExactOnline implements INodeType {
 	description: INodeTypeDescription = {
@@ -155,6 +155,101 @@ export class ExactOnline implements INodeType {
 					}
 				}
 			},
+			{
+				displayName: 'Filter',
+				name: 'filter',
+				placeholder: 'Add filter',
+				type: 'fixedCollection',
+				typeOptions: {
+					loadOptionsDependsOn:['service','resource','operation'],
+					multipleValues: true,
+					sortable: true,
+				},
+				description: 'Filter',
+				default: {},
+				displayOptions: {
+					show: {
+						operation:[
+							'getAll',
+						],
+					},
+				},
+				options: [
+					{
+						name: 'string',
+						displayName: 'String filter',
+						values: [
+							{
+								displayName: 'Field',
+								name: 'field',
+								type: 'options',
+								typeOptions: {
+									loadOptionsMethod: 'getFieldsString',
+								},
+								default: '',
+								description: 'Field name to filter.',
+							},
+							{
+								displayName: 'Value',
+								name: 'value',
+								type: 'string',
+								default: '',
+								description: 'Value to apply in the filter.',
+							},
+
+						],
+					},
+					{
+						name: 'boolean',
+						displayName: 'boolean filter',
+						values: [
+							{
+								displayName: 'Field',
+								name: 'field',
+								type: 'options',
+								typeOptions: {
+									loadOptionsMethod: 'getFieldsBoolean',
+								},
+								default: '',
+								description: 'Field name to filter.',
+							},
+							{
+								displayName: 'Value',
+								name: 'value',
+								type: 'boolean',
+								default: false,
+								description: 'Value to apply in the filter.',
+							},
+
+						],
+					},
+					{
+						name: 'number',
+						displayName: 'Number filter',
+						values: [
+							{
+								displayName: 'Field',
+								name: 'field',
+								type: 'options',
+								typeOptions: {
+									loadOptionsMethod: 'getFieldsNumber',
+								},
+								default: '',
+								description: 'Field name to filter.',
+							},
+							{
+								displayName: 'Value',
+								name: 'value',
+								type: 'number',
+								default: 0,
+								description: 'Value to apply in the filter.',
+							},
+
+						],
+					},
+				],
+			},
+
 		],
 	};
 
@@ -181,6 +276,33 @@ export class ExactOnline implements INodeType {
 				const resource = this.getNodeParameter('resource', 0) as string;
 				const fields = await getFields.call(this, `${division}/${service}/${resource}`);
 				return toFieldSelectOptions(fields.map((x) => ({name:x})) as LoadedFields[]);
+			},
+
+			async getFieldsString(this: ILoadOptionsFunctions) {
+				const service = this.getNodeParameter('service', 0) as string;
+				const resource = this.getNodeParameter('resource', 0) as string;
+				const fields = await getEndpointFieldConfig.call(this,service,resource) as endpointConfiguration[];
+
+
+				return toFieldFilterOptions(fields.filter(x=>x.type==='string') as endpointConfiguration[]);
+			},
+
+			async getFieldsBoolean(this: ILoadOptionsFunctions) {
+				const service = this.getNodeParameter('service', 0) as string;
+				const resource = this.getNodeParameter('resource', 0) as string;
+				const fields = await getEndpointFieldConfig.call(this,service,resource) as endpointConfiguration[];
+
+
+				return toFieldFilterOptions(fields.filter(x=>x.type==='boolean') as endpointConfiguration[]);
+			},
+
+			async getFieldsNumber(this: ILoadOptionsFunctions) {
+				const service = this.getNodeParameter('service', 0) as string;
+				const resource = this.getNodeParameter('resource', 0) as string;
+				const fields = await getEndpointFieldConfig.call(this,service,resource) as endpointConfiguration[];
+
+
+				return toFieldFilterOptions(fields.filter(x=>x.type==='number') as endpointConfiguration[]);
 			},
 
 		},
