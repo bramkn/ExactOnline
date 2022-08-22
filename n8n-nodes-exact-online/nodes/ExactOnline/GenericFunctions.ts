@@ -8,7 +8,7 @@ import {
 } from 'n8n-core';
 
 import { IDataObject, IOAuth2Options, NodeApiError } from 'n8n-workflow';
-import { LoadedDivision, LoadedOptions } from './types';
+import { LoadedDivision, LoadedFields, LoadedOptions } from './types';
 import { accountancyEndpoints, crmEndpoints, financialEndpoints, financialTransactionEndpoints } from './endpointDescription';
 
 export async function exactOnlineApiRequest(
@@ -73,10 +73,10 @@ export async function getData(this: IExecuteFunctions | IExecuteSingleFunctions 
 		console.log(qs);
 		const responseData = await exactOnlineApiRequest.call(this, 'GET', `${resource}`,body,qs,option);
 		if(responseData.body.d.results){
-			return responseData.body.d.results;
+			return [].concat(responseData.body.d.results);
 		}
 		else{
-			return responseData.body.d;
+			return [].concat(responseData.body.d);
 		}
 
 }
@@ -95,10 +95,10 @@ export async function getAllData(this: IExecuteFunctions | IExecuteSingleFunctio
 		let nextPageUrl = '';
 		do {
 			if(nextPageUrl === ''){
-				responseData = await exactOnlineApiRequest.call(this, 'GET', `${resource}`,body,qs,option);
+				responseData = await exactOnlineApiRequest.call(this,'GET', `${resource}`,body,qs,option);
 			}
 			else{
-				responseData = await exactOnlineApiRequest.call(this, 'GET', `${resource}`,body,qs,option,nextPageUrl);
+				responseData = await exactOnlineApiRequest.call(this, 'GET', `${resource}`,body,{},option,nextPageUrl);
 			}
 
 			if(responseData.body.d.results){
@@ -116,9 +116,18 @@ export async function getAllData(this: IExecuteFunctions | IExecuteSingleFunctio
 		return returnData;
 
 }
+export async function getFields(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
+	resource: string,): Promise<string[]> {
+		const qs:IDataObject = {};
+		qs['$top']=1;
+		const responseData = await getData.call(this, `${resource}`,{},qs);
+		const fields = Object.keys(responseData[0]);
+		return fields.filter(x=>x.substring(0,2)!=='__');
 
+}
 
-export async function getResourceOptions(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,service:string){
+export async function getResourceOptions(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
+	service:string){
 
 	switch(service){
 		case 'accountancy':
@@ -139,3 +148,6 @@ export const toDivisionOptions = (items: LoadedDivision[]) =>
 
 export const toOptions = (items: LoadedOptions[]) =>
 	items.map(({ value, name }) => ({ name: name, value: value }));
+
+export const toFieldSelectOptions = (items: LoadedFields[]) =>
+	items.map(({ name }) => ({ name: name, value: name }));
