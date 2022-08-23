@@ -7,7 +7,7 @@ import {
 	INodeTypeDescription,
 	NodeOperationError,
 } from 'n8n-workflow';
-import { exactOnlineApiRequest, getAllData, getCurrentDivision, getData, getEndpointConfig, getEndpointFieldConfig, getFields, getResourceOptions, getServiceOptions, toDivisionOptions, toFieldFilterOptions, toFieldSelectOptions, toOptions, toOptionsFromStringArray } from './GenericFunctions';
+import { exactOnlineApiRequest, getAllData, getCurrentDivision, getData, getEndpointConfig, getEndpointFieldConfig, getFields, getFieldType, getResourceOptions, getServiceOptions, toDivisionOptions, toFieldFilterOptions, toFieldSelectOptions, toOptions, toOptionsFromStringArray } from './GenericFunctions';
 import { endpointConfiguration, endpointFieldConfiguration, LoadedDivision, LoadedFields, LoadedOptions } from './types';
 
 export class ExactOnline implements INodeType {
@@ -186,7 +186,7 @@ export class ExactOnline implements INodeType {
 										value:'ne'
 									},
 									{
-										name:'Greater rhan',
+										name:'Greater than',
 										value:'gt'
 									},
 									{
@@ -272,10 +272,10 @@ export class ExactOnline implements INodeType {
 
 
 		let responseData;
-		const division = this.getNodeParameter('division', 0) as string;
-		const service = this.getNodeParameter('service', 0) as string;
-		const resource = this.getNodeParameter('resource', 0) as string;
-		const operation = this.getNodeParameter('operation', 0) as string;
+		const division = this.getNodeParameter('division', 0,'') as string;
+		const service = this.getNodeParameter('service', 0,'') as string;
+		const resource = this.getNodeParameter('resource', 0,'') as string;
+		const operation = this.getNodeParameter('operation', 0,'') as string;
 		const endpointConfig = await getEndpointConfig.call(this,service,resource) as endpointConfiguration;
 		const uri = endpointConfig.uri.replace('{division}',division);
 		const excludeSelection = this.getNodeParameter('excludeSelection', 0, false) as boolean;
@@ -302,12 +302,34 @@ export class ExactOnline implements INodeType {
 				if(operation ==='getAll'){
 					const qs: IDataObject = {};
 					const limit = this.getNodeParameter('limit', itemIndex, 0) as number;
+					const filter = this.getNodeParameter('filter.filter', itemIndex, 0) as IDataObject[];
+					console.log(filter);
 					if(excludeSelection){
 						qs['$select'] = onlyNotSelectedFields.join(',');
 					}
 					else{
 						qs['$select'] = selectedFields.join(',');
 					}
+					const filters = [];
+					if(filter.length>0){
+						for(var filterIndex = 0; filterIndex < filter.length; filterIndex++){
+							const fieldName = filter[filterIndex].field as string;
+							const fieldType = await getFieldType.call(this, endpointConfig,fieldName);
+							const fieldValue =filter[filterIndex].value as string;
+							switch(fieldType){
+								case 'string':
+									filters.push(`${fieldName} ${filter[filterIndex].operator} '${filter[filterIndex].value}'`);
+									break;
+								case 'boolean':
+									filters.push(`${fieldName} ${filter[filterIndex].operator} ${fieldValue.toLowerCase() === 'true'}`);
+									break;
+								case 'number':
+									filters.push(`${fieldName} ${filter[filterIndex].operator} ${filter[filterIndex].value}`);
+									break;
+							}
+						}
+					}
+					qs['$filter'] = filters.join(' and ');
 
 					responseData = await getAllData.call(this, uri,limit,{},qs);
 					returnData = returnData.concat(responseData);

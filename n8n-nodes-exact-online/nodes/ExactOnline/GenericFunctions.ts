@@ -126,6 +126,13 @@ export async function getServiceOptions(this: IExecuteFunctions | IExecuteSingle
 	return config.map(x  => x.service.toLocaleLowerCase());
 
 }
+export async function getFieldType(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
+	endpointConfig:endpointConfiguration,
+	fieldName:string): Promise<string> {
+
+		return (endpointConfig.fields.filter(a => a.name === fieldName)[0].type ?? 'string');
+
+}
 
 export async function getResourceOptions(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
 	service:string){
