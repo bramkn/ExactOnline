@@ -107,7 +107,7 @@ export class ExactOnline implements INodeType {
 				}
 			},
 			{
-				displayName: 'Selection is excluded',
+				displayName: 'Selected fields are excluded',
 				name: 'excludeSelection',
 				type: 'boolean',
 				default: false,
