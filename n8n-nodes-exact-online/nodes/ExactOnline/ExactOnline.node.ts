@@ -139,6 +139,30 @@ export class ExactOnline implements INodeType {
 				}
 			},
 			{
+				displayName: 'Conjunction',
+				name: 'conjunction',
+				type: 'options',
+				options:[
+					{
+						name:'And',
+						value:'and'
+					},
+					{
+						name:'Or',
+						value:'or'
+					},
+				],
+				default: 'and',
+				description: 'Conjunction to use in filter.',
+				displayOptions:{
+					show:{
+						operation:[
+							'getAll',
+						]
+					}
+				}
+			},
+			{
 				displayName: 'Filter',
 				name: 'filter',
 				placeholder: 'Add filter',
@@ -194,61 +218,12 @@ export class ExactOnline implements INodeType {
 										value:'ge'
 									},
 									{
-										name:'Lower than',
+										name:'Less than',
 										value:'lt'
 									},
-								],
-								default: '',
-								description: 'Operator to use in filter.',
-							},
-							{
-								displayName: 'Value',
-								name: 'value',
-								type: 'string',
-								default: '',
-								description: 'Value to apply in the filter.',
-							},
-						],
-					},
-
-					{
-						name: 'filter',
-						displayName: 'Filter',
-						values: [
-							{
-								displayName: 'Field',
-								name: 'field',
-								type: 'options',
-								typeOptions: {
-									loadOptionsMethod: 'getFieldsFilter',
-								},
-								default: '',
-								description: 'Field name to filter.',
-							},
-							{
-								displayName: 'Operator',
-								name: 'operator',
-								type: 'options',
-								options:[
 									{
-										name:'Equal',
-										value:'eq'
-									},
-									{
-										name:'Not equal',
-										value:'ne'
-									},
-									{
-										name:'Greater than',
-										value:'gt'
-									},
-									{
-										name:'Greater than or equal',
-										value:'ge'
-									},
-									{
-										name:'Lower than',
-										value:'lt'
+										name:'Less than or equal',
+										value:'le'
 									},
 								],
 								default: '',
@@ -359,6 +334,7 @@ export class ExactOnline implements INodeType {
 				if(operation ==='getAll'){
 					const qs: IDataObject = {};
 					const limit = this.getNodeParameter('limit', itemIndex, 0) as number;
+					const conjunction = this.getNodeParameter('conjunction', itemIndex, 'and') as string;
 					const filter = this.getNodeParameter('filter.filter', itemIndex, 0) as IDataObject[];
 					console.log(filter);
 					if(excludeSelection){
@@ -386,7 +362,7 @@ export class ExactOnline implements INodeType {
 							}
 						}
 					}
-					qs['$filter'] = filters.join(' and ');
+					qs['$filter'] = filters.join(` ${conjunction} `);
 
 					responseData = await getAllData.call(this, uri,limit,{},qs);
 					returnData = returnData.concat(responseData);
