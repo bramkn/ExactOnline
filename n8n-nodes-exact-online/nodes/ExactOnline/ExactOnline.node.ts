@@ -65,16 +65,10 @@ export class ExactOnline implements INodeType {
 				displayName: 'Operation',
 				name: 'operation',
 				type: 'options',
-				options:[
-					{
-						name:'Get',
-						value:'get'
-					},
-					{
-						name:'Get all',
-						value:'getAll'
-					},
-				],
+				typeOptions: {
+					loadOptionsDependsOn:['resource'],
+					loadOptionsMethod: 'getOperations',
+				},
 				default: '',
 				description: 'Operation to use.',
 			},
@@ -269,6 +263,17 @@ export class ExactOnline implements INodeType {
 				const resources = await getResourceOptions.call(this,service) as string[];
 
 				return toOptionsFromStringArray(resources);
+			},
+
+			async getOperations(this: ILoadOptionsFunctions) {
+				const service = this.getNodeParameter('service', 0) as string;
+				const resource = this.getNodeParameter('resource', 0) as string;
+				const endpointConfig = await getEndpointConfig.call(this,service,resource) as endpointConfiguration;
+				const methods = endpointConfig.methods.map(x=>x.toLowerCase());
+				if(methods.includes('get')){
+					methods.push('getAll');
+				}
+				return toOptionsFromStringArray(methods);
 			},
 
 			async getFields(this: ILoadOptionsFunctions) {

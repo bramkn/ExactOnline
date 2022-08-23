@@ -171,4 +171,4 @@ export const toFieldFilterOptions = (items: endpointFieldConfiguration[]) =>
 items.map(({ name }) => ({ name: name, value: name }));
 
 export const toOptionsFromStringArray = (items:string[]) =>
-	items.map((x) => ({name:x, value:x}));
+	items.map((x) => ({name:x.charAt(0).toUpperCase() + x.slice(1), value:x}));
