@@ -1,7 +1,7 @@
 export const fieldsFinancialTransaction = [
 	{
-		endpoint: 'TransactionLines',
-		fields : [
+		"endpoint": 'TransactionLines',
+		"fields" : [
 			{
 				"displayName": "ID",
 				"name": "ID",
