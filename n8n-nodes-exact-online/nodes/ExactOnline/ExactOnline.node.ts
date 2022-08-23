@@ -173,13 +173,41 @@ export class ExactOnline implements INodeType {
 								description: 'Field name to filter.',
 							},
 							{
+								displayName: 'Operator',
+								name: 'operator',
+								type: 'options',
+								options:[
+									{
+										name:'Equal',
+										value:'eq'
+									},
+									{
+										name:'Not equal',
+										value:'ne'
+									},
+									{
+										name:'Greater rhan',
+										value:'gt'
+									},
+									{
+										name:'Greater than or equal',
+										value:'ge'
+									},
+									{
+										name:'Lower than',
+										value:'lt'
+									},
+								],
+								default: '',
+								description: 'Value to apply in the filter.',
+							},
+							{
 								displayName: 'Value',
 								name: 'value',
 								type: 'string',
 								default: '',
 								description: 'Value to apply in the filter.',
 							},
-
 						],
 					},
 				],
