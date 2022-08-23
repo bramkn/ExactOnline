@@ -7,8 +7,8 @@ import {
 	INodeTypeDescription,
 	NodeOperationError,
 } from 'n8n-workflow';
-import { exactOnlineApiRequest, getAllData, getCurrentDivision, getData, getEndpointFieldConfig, getFields, getResourceOptions, toDivisionOptions, toFieldFilterOptions, toFieldSelectOptions, toOptions } from './GenericFunctions';
-import { endpointConfiguration, LoadedDivision, LoadedFields, LoadedOptions } from './types';
+import { exactOnlineApiRequest, getAllData, getCurrentDivision, getData, getEndpointConfig, getEndpointFieldConfig, getFields, getResourceOptions, toDivisionOptions, toFieldFilterOptions, toFieldSelectOptions, toOptions, toOptionsFromStringArray } from './GenericFunctions';
+import { endpointConfiguration, endpointFieldConfiguration, LoadedDivision, LoadedFields, LoadedOptions } from './types';
 
 export class ExactOnline implements INodeType {
 	description: INodeTypeDescription = {
@@ -176,15 +176,15 @@ export class ExactOnline implements INodeType {
 				},
 				options: [
 					{
-						name: 'string',
-						displayName: 'String filter',
+						name: 'filter',
+						displayName: 'Filter',
 						values: [
 							{
 								displayName: 'Field',
 								name: 'field',
 								type: 'options',
 								typeOptions: {
-									loadOptionsMethod: 'getFieldsString',
+									loadOptionsMethod: 'getFieldsFilter',
 								},
 								default: '',
 								description: 'Field name to filter.',
@@ -194,54 +194,6 @@ export class ExactOnline implements INodeType {
 								name: 'value',
 								type: 'string',
 								default: '',
-								description: 'Value to apply in the filter.',
-							},
-
-						],
-					},
-					{
-						name: 'boolean',
-						displayName: 'boolean filter',
-						values: [
-							{
-								displayName: 'Field',
-								name: 'field',
-								type: 'options',
-								typeOptions: {
-									loadOptionsMethod: 'getFieldsBoolean',
-								},
-								default: '',
-								description: 'Field name to filter.',
-							},
-							{
-								displayName: 'Value',
-								name: 'value',
-								type: 'boolean',
-								default: false,
-								description: 'Value to apply in the filter.',
-							},
-
-						],
-					},
-					{
-						name: 'number',
-						displayName: 'Number filter',
-						values: [
-							{
-								displayName: 'Field',
-								name: 'field',
-								type: 'options',
-								typeOptions: {
-									loadOptionsMethod: 'getFieldsNumber',
-								},
-								default: '',
-								description: 'Field name to filter.',
-							},
-							{
-								displayName: 'Value',
-								name: 'value',
-								type: 'number',
-								default: 0,
 								description: 'Value to apply in the filter.',
 							},
 
@@ -265,45 +217,29 @@ export class ExactOnline implements INodeType {
 
 			async getResources(this: ILoadOptionsFunctions) {
 				const service = this.getNodeParameter('service', 0) as string;
-				const resources = await getResourceOptions.call(this,service);
+				const resources = await getResourceOptions.call(this,service) as string[];
 
-				return toOptions(resources as LoadedOptions[]);
+				return toOptionsFromStringArray(resources);
 			},
 
 			async getFields(this: ILoadOptionsFunctions) {
-				const division = this.getNodeParameter('division', 0) as string;
 				const service = this.getNodeParameter('service', 0) as string;
 				const resource = this.getNodeParameter('resource', 0) as string;
-				const fields = await getFields.call(this, division,service,resource);
+				const endpointConfig = await getEndpointConfig.call(this,service,resource) as endpointConfiguration;
+				const fields = await getFields.call(this, endpointConfig);
 				return toFieldSelectOptions(fields.map((x) => ({name:x})) as LoadedFields[]);
 			},
 
-			async getFieldsString(this: ILoadOptionsFunctions) {
+			async getFieldsFilter(this: ILoadOptionsFunctions) {
 				const service = this.getNodeParameter('service', 0) as string;
 				const resource = this.getNodeParameter('resource', 0) as string;
-				const fields = await getEndpointFieldConfig.call(this,service,resource) as endpointConfiguration[];
+				const endpointConfig = await getEndpointConfig.call(this,service,resource) as endpointConfiguration;
+				const fields = endpointConfig.fields;
 
-
-				return toFieldFilterOptions(fields.filter(x=>x.type==='string') as endpointConfiguration[]);
+				return toFieldFilterOptions(fields as endpointFieldConfiguration[]);
 			},
 
-			async getFieldsBoolean(this: ILoadOptionsFunctions) {
-				const service = this.getNodeParameter('service', 0) as string;
-				const resource = this.getNodeParameter('resource', 0) as string;
-				const fields = await getEndpointFieldConfig.call(this,service,resource) as endpointConfiguration[];
 
-
-				return toFieldFilterOptions(fields.filter(x=>x.type==='boolean') as endpointConfiguration[]);
-			},
-
-			async getFieldsNumber(this: ILoadOptionsFunctions) {
-				const service = this.getNodeParameter('service', 0) as string;
-				const resource = this.getNodeParameter('resource', 0) as string;
-				const fields = await getEndpointFieldConfig.call(this,service,resource) as endpointConfiguration[];
-
-
-				return toFieldFilterOptions(fields.filter(x=>x.type==='number') as endpointConfiguration[]);
-			},
 
 		},
 	};
@@ -323,11 +259,12 @@ export class ExactOnline implements INodeType {
 		const service = this.getNodeParameter('service', 0) as string;
 		const resource = this.getNodeParameter('resource', 0) as string;
 		const operation = this.getNodeParameter('operation', 0) as string;
+		const endpointConfig = await getEndpointConfig.call(this,service,resource) as endpointConfiguration;
 		const excludeSelection = this.getNodeParameter('excludeSelection', 0, false) as boolean;
 		const selectedFields = this.getNodeParameter('selectedFields', 0, []) as string[];
 		let onlyNotSelectedFields:string[] = [];
 		if(excludeSelection){
-			const allFields = await getFields.call(this, division,service,resource);
+			const allFields = await getFields.call(this, endpointConfig);
 			onlyNotSelectedFields = allFields.filter(x => !selectedFields.includes(x));
 		}
 

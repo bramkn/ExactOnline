@@ -1,4 +1,5 @@
 import { OptionsWithUri } from 'request';
+import config from "./fieldConfigArray.json";
 
 import {
 	IExecuteFunctions,
@@ -8,7 +9,7 @@ import {
 } from 'n8n-core';
 
 import { IDataObject, IOAuth2Options, NodeApiError } from 'n8n-workflow';
-import { endpointConfiguration, LoadedDivision, LoadedFields, LoadedOptions } from './types';
+import { endpointConfiguration, endpointFieldConfiguration, LoadedDivision, LoadedFields, LoadedOptions } from './types';
 import { accountancyEndpoints, crmEndpoints, financialEndpoints, financialTransactionEndpoints } from './endpointDescription';
 import { fieldsFinancialTransaction } from './FieldDescription';
 
@@ -114,25 +115,11 @@ export async function getAllData(this: IExecuteFunctions | IExecuteSingleFunctio
 
 }
 export async function getFields(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
-	division:string,
-	service:string,
-	endpoint:string): Promise<string[]> {
-		const fieldConfig = await getEndpointFieldConfig.call(this,service,endpoint);
+	endpointConfig:endpointConfiguration): Promise<string[]> {
 
-		if(fieldConfig){
-			return fieldConfig.map(a => a.name);
-		}
+			return endpointConfig.fields.map(a => a.name);
 
-		const qs:IDataObject = {};
-		qs['$top']=1;
-		const responseData = await getData.call(this, `${division}/${service}/${endpoint}`,{},qs);
-		if(responseData[0]){
-			const fields = Object.keys(responseData[0]);
-			return fields.filter(x=>x.substring(0,2)!=='__');
-		}
-		else{
-			return ['No Data Found']
-		}
+
 
 
 }
@@ -140,29 +127,23 @@ export async function getFields(this: IExecuteFunctions | IExecuteSingleFunction
 export async function getResourceOptions(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
 	service:string){
 
-	switch(service){
-		case 'accountancy':
-			return accountancyEndpoints;
-		case 'crm':
-			return crmEndpoints;
-		case 'financial':
-			return financialEndpoints;
-		case 'financialtransaction':
-			return financialTransactionEndpoints;
-		default:
-			return null;
-	}
+	return config.filter(x => x.service.toLocaleLowerCase() === service).map(x  => x.endpoint);
+
 }
 
 export async function getEndpointFieldConfig(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
 	service:string,
 	endpoint:string){
-		switch(service){
-			case 'financialtransaction':
-				return fieldsFinancialTransaction.filter(x => x.endpoint===endpoint)[0].fields;
-		}
 
-	return null;
+	return config.filter(x => x.service.toLocaleLowerCase() === service && x.endpoint ===endpoint)[0].fields;
+
+}
+
+export async function getEndpointConfig(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
+	service:string,
+	endpoint:string){
+
+	return config.filter(x => x.service.toLocaleLowerCase() === service && x.endpoint ===endpoint)[0];
 
 }
 
@@ -176,5 +157,8 @@ export const toOptions = (items: LoadedOptions[]) =>
 export const toFieldSelectOptions = (items: LoadedFields[]) =>
 	items.map(({ name }) => ({ name: name, value: name }));
 
-export const toFieldFilterOptions = (items: endpointConfiguration[]) =>
+export const toFieldFilterOptions = (items: endpointFieldConfiguration[]) =>
 items.map(({ name }) => ({ name: name, value: name }));
+
+export const toOptionsFromStringArray = (items:string[]) =>
+	items.map((x) => ({name:x, value:x}));

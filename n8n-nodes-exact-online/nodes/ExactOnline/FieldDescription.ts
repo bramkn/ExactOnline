@@ -1176,6 +1176,10 @@ export const fieldsFinancialTransaction = [
 	},
 ];
 
+export const fieldsCRM = [
+
+];
+
 
 
 
