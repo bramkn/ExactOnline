@@ -119,8 +119,11 @@ export async function getFields(this: IExecuteFunctions | IExecuteSingleFunction
 
 			return endpointConfig.fields.map(a => a.name);
 
+}
 
+export async function getServiceOptions(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions){
 
+	return config.map(x  => x.service.toLocaleLowerCase());
 
 }
 

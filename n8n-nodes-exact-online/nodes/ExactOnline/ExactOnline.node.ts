@@ -7,7 +7,7 @@ import {
 	INodeTypeDescription,
 	NodeOperationError,
 } from 'n8n-workflow';
-import { exactOnlineApiRequest, getAllData, getCurrentDivision, getData, getEndpointConfig, getEndpointFieldConfig, getFields, getResourceOptions, toDivisionOptions, toFieldFilterOptions, toFieldSelectOptions, toOptions, toOptionsFromStringArray } from './GenericFunctions';
+import { exactOnlineApiRequest, getAllData, getCurrentDivision, getData, getEndpointConfig, getEndpointFieldConfig, getFields, getResourceOptions, getServiceOptions, toDivisionOptions, toFieldFilterOptions, toFieldSelectOptions, toOptions, toOptionsFromStringArray } from './GenericFunctions';
 import { endpointConfiguration, endpointFieldConfiguration, LoadedDivision, LoadedFields, LoadedOptions } from './types';
 
 export class ExactOnline implements INodeType {
@@ -40,32 +40,15 @@ export class ExactOnline implements INodeType {
 				default: '',
 				description: 'Division to get data from.',
 			},
-			// Node properties which the user gets displayed and
-			// can change on the node.
 			{
 				displayName: 'Service',
 				name: 'service',
 				type: 'options',
-				options:[
-					{
-						name:'Accountancy',
-						value:'accountancy'
-					},
-					{
-						name:'CRM',
-						value:'crm'
-					},
-					{
-						name:'Financial',
-						value:'financial'
-					},
-					{
-						name:'Financial Transaction',
-						value:'financialtransaction'
-					},
-				],
+				typeOptions: {
+					loadOptionsMethod: 'getServices',
+				},
 				default: '',
-				description: 'Service category for easy filtering.',
+				description: 'Service to connecto to.',
 			},
 			{
 				displayName: 'Resource',
@@ -213,6 +196,12 @@ export class ExactOnline implements INodeType {
 				const divisions = await exactOnlineApiRequest.call(this,'GET', `/api/v1/${currentDivision}/system/Divisions`);
 
 				return toDivisionOptions(divisions.body.d.results as LoadedDivision[]);
+			},
+
+			async getServices(this: ILoadOptionsFunctions) {
+				const services = await getServiceOptions.call(this) as string[];
+
+				return toOptionsFromStringArray([...new Set(services)]);
 			},
 
 			async getResources(this: ILoadOptionsFunctions) {
