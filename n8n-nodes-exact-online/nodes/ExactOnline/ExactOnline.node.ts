@@ -210,7 +210,7 @@ export class ExactOnline implements INodeType {
 			async getDivisions(this: ILoadOptionsFunctions) {
 
 				const currentDivision = await getCurrentDivision.call(this);
-				const divisions = await exactOnlineApiRequest.call(this,'GET', `${currentDivision}/system/Divisions`);
+				const divisions = await exactOnlineApiRequest.call(this,'GET', `/api/v1/${currentDivision}/system/Divisions`);
 
 				return toDivisionOptions(divisions.body.d.results as LoadedDivision[]);
 			},
