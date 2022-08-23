@@ -61,17 +61,17 @@ export async function exactOnlineApiRequest(
 
 export async function getCurrentDivision(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
 	): Promise<string> {
-		const responseData = await exactOnlineApiRequest.call(this, 'GET', `current/Me?$select=CurrentDivision`);
+		const responseData = await exactOnlineApiRequest.call(this, 'GET', `/api/v1/current/Me?$select=CurrentDivision`);
 		return responseData.body.d.results[0].CurrentDivision;
 }
 
 export async function getData(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
-	resource: string,
+	uri: string,
 	body: IDataObject = {},
 	qs: IDataObject = {},
 	option: IDataObject = {},
 	): Promise<IDataObject[]> {
-		const responseData = await exactOnlineApiRequest.call(this, 'GET', `${resource}`,body,qs,option);
+		const responseData = await exactOnlineApiRequest.call(this, 'GET', uri,body,qs,option);
 		if(responseData.body.d.results){
 			return [].concat(responseData.body.d.results);
 		}
@@ -82,7 +82,7 @@ export async function getData(this: IExecuteFunctions | IExecuteSingleFunctions 
 }
 
 export async function getAllData(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
-	resource: string,
+	uri: string,
 	limit: number = 60,
 	body: IDataObject = {},
 	qs: IDataObject = {},
@@ -93,10 +93,10 @@ export async function getAllData(this: IExecuteFunctions | IExecuteSingleFunctio
 		let nextPageUrl = '';
 		do {
 			if(nextPageUrl === ''){
-				responseData = await exactOnlineApiRequest.call(this,'GET', `${resource}`,body,qs,option);
+				responseData = await exactOnlineApiRequest.call(this,'GET', uri,body,qs,option);
 			}
 			else{
-				responseData = await exactOnlineApiRequest.call(this, 'GET', `${resource}`,body,{},option,nextPageUrl);
+				responseData = await exactOnlineApiRequest.call(this, 'GET', uri,body,{},option,nextPageUrl);
 			}
 
 			if(responseData.body.d.results){
