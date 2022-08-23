@@ -345,7 +345,7 @@ export class ExactOnline implements INodeType {
 					if(excludeSelection){
 						qs['$select'] = onlyNotSelectedFields.join(',');
 					}
-					else{
+					else if(selectedFields.length>0){
 						qs['$select'] = selectedFields.join(',');
 					}
 					const filters = [];
