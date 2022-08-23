@@ -10,7 +10,7 @@ import {
 import { IDataObject, IOAuth2Options, NodeApiError } from 'n8n-workflow';
 import { endpointConfiguration, LoadedDivision, LoadedFields, LoadedOptions } from './types';
 import { accountancyEndpoints, crmEndpoints, financialEndpoints, financialTransactionEndpoints } from './endpointDescription';
-import { fieldsFinancialTransaction } from './endpointFieldsDescriptions/FinancialTransactionDescription';
+import { fieldsFinancialTransaction } from './FieldDescription';
 
 export async function exactOnlineApiRequest(
 	this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
@@ -87,8 +87,6 @@ export async function getAllData(this: IExecuteFunctions | IExecuteSingleFunctio
 	qs: IDataObject = {},
 	option: IDataObject = {},
 	): Promise<IDataObject[]> {
-		console.log(resource);
-		console.log(qs);
 		let returnData:IDataObject[] = [];
 		let responseData;
 		let nextPageUrl = '';
@@ -116,13 +114,26 @@ export async function getAllData(this: IExecuteFunctions | IExecuteSingleFunctio
 
 }
 export async function getFields(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
-	resource: string,): Promise<string[]> {
+	division:string,
+	service:string,
+	endpoint:string): Promise<string[]> {
+		const fieldConfig = await getEndpointFieldConfig.call(this,service,endpoint);
+
+		if(fieldConfig){
+			return fieldConfig.map(a => a.name);
+		}
+
 		const qs:IDataObject = {};
 		qs['$top']=1;
-		const responseData = await getData.call(this, `${resource}`,{},qs);
+		const responseData = await getData.call(this, `${division}/${service}/${endpoint}`,{},qs);
+		if(responseData[0]){
+			const fields = Object.keys(responseData[0]);
+			return fields.filter(x=>x.substring(0,2)!=='__');
+		}
+		else{
+			return ['No Data Found']
+		}
 
-		const fields = Object.keys(responseData[0]);
-		return fields.filter(x=>x.substring(0,2)!=='__');
 
 }
 
@@ -138,6 +149,8 @@ export async function getResourceOptions(this: IExecuteFunctions | IExecuteSingl
 			return financialEndpoints;
 		case 'financialtransaction':
 			return financialTransactionEndpoints;
+		default:
+			return null;
 	}
 }
 

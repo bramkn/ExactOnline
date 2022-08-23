@@ -274,7 +274,7 @@ export class ExactOnline implements INodeType {
 				const division = this.getNodeParameter('division', 0) as string;
 				const service = this.getNodeParameter('service', 0) as string;
 				const resource = this.getNodeParameter('resource', 0) as string;
-				const fields = await getFields.call(this, `${division}/${service}/${resource}`);
+				const fields = await getFields.call(this, division,service,resource);
 				return toFieldSelectOptions(fields.map((x) => ({name:x})) as LoadedFields[]);
 			},
 
@@ -327,7 +327,7 @@ export class ExactOnline implements INodeType {
 		const selectedFields = this.getNodeParameter('selectedFields', 0, []) as string[];
 		let onlyNotSelectedFields:string[] = [];
 		if(excludeSelection){
-			const allFields = await getFields.call(this, `${division}/${service}/${resource}`);
+			const allFields = await getFields.call(this, division,service,resource);
 			onlyNotSelectedFields = allFields.filter(x => !selectedFields.includes(x));
 		}
 
