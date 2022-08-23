@@ -260,6 +260,7 @@ export class ExactOnline implements INodeType {
 		const resource = this.getNodeParameter('resource', 0) as string;
 		const operation = this.getNodeParameter('operation', 0) as string;
 		const endpointConfig = await getEndpointConfig.call(this,service,resource) as endpointConfiguration;
+		const uri = endpointConfig.uri.replace('{division}',division);
 		const excludeSelection = this.getNodeParameter('excludeSelection', 0, false) as boolean;
 		const selectedFields = this.getNodeParameter('selectedFields', 0, []) as string[];
 		let onlyNotSelectedFields:string[] = [];
@@ -277,7 +278,7 @@ export class ExactOnline implements INodeType {
 					if(id!==''){
 						qs['$filter'] = `ID eq guid'${id}'`;
 						qs['$top'] = 1;
-						responseData = await getData.call(this, `${division}/${service}/${resource}`,{},qs);
+						responseData = await getData.call(this, uri,{},qs);
 						returnData = returnData.concat(responseData);
 					}
 				}
@@ -291,7 +292,7 @@ export class ExactOnline implements INodeType {
 						qs['$select'] = selectedFields.join(',');
 					}
 
-					responseData = await getAllData.call(this, `${division}/${service}/${resource}`,limit,{},qs);
+					responseData = await getAllData.call(this, uri,limit,{},qs);
 					returnData = returnData.concat(responseData);
 				}
 

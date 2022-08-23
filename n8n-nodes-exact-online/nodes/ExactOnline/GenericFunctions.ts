@@ -16,7 +16,7 @@ import { fieldsFinancialTransaction } from './FieldDescription';
 export async function exactOnlineApiRequest(
 	this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
 	method: string,
-	resource: string,
+	uri: string,
 	body: IDataObject = {},
 	qs: IDataObject = {},
 	option: IDataObject = {},
@@ -31,7 +31,7 @@ export async function exactOnlineApiRequest(
 		method,
 		body,
 		qs,
-		uri: `${credentials.url}/api/v1/${resource}`,
+		uri: `${credentials.url}${uri}`,
 		json: true,
 		//@ts-ignore
 		resolveWithFullResponse: true,
