@@ -400,7 +400,6 @@ export class ExactOnline implements INodeType {
 					const limit = this.getNodeParameter('limit', itemIndex, 0) as number;
 					const conjunction = this.getNodeParameter('conjunction', itemIndex, 'and') as string;
 					const filter = this.getNodeParameter('filter.filter', itemIndex, 0) as IDataObject[];
-					console.log(filter);
 					if(excludeSelection){
 						qs['$select'] = onlyNotSelectedFields.join(',');
 					}
