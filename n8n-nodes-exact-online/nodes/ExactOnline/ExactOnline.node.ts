@@ -433,8 +433,14 @@ export class ExactOnline implements INodeType {
 					const qs: IDataObject = {};
 					const body: IDataObject = {};
 					const data = this.getNodeParameter('data.field', itemIndex, 0) as IDataObject[];
+					const fieldsEntered = data.map(x=>x.fieldName);
 					const mandatoryFields = await getMandatoryFields.call(this,endpointConfig) as string[];
-
+					const mandatoryFieldsNotIncluded = mandatoryFields.filter(x=> !fieldsEntered.includes(x));
+					if(mandatoryFieldsNotIncluded.length>0){
+						//error deze fields moeten worden opgegeven en zijn dat niet.
+					}
+console.log(data);
+console.log(mandatoryFieldsNotIncluded.length);
 					if(data.length>0){
 						for(var dataIndex = 0; dataIndex < data.length; dataIndex++){
 							const fieldName = data[dataIndex].field as string;
