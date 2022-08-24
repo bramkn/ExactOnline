@@ -7,7 +7,7 @@ import {
 	INodeTypeDescription,
 	NodeOperationError,
 } from 'n8n-workflow';
-import { exactOnlineApiRequest, getAllData, getCurrentDivision, getData, getEndpointConfig, getEndpointFieldConfig, getFields, getFieldType, getResourceOptions, getServiceOptions, toDivisionOptions, toFieldFilterOptions, toFieldSelectOptions, toOptions, toOptionsFromStringArray } from './GenericFunctions';
+import { exactOnlineApiRequest, getAllData, getCurrentDivision, getData, getEndpointConfig, getEndpointFieldConfig, getFields, getFieldType, getMandatoryFields, getResourceOptions, getServiceOptions, toDivisionOptions, toFieldFilterOptions, toFieldSelectOptions, toOptions, toOptionsFromStringArray } from './GenericFunctions';
 import { endpointConfiguration, endpointFieldConfiguration, LoadedDivision, LoadedFields, LoadedOptions } from './types';
 
 export class ExactOnline implements INodeType {
@@ -371,6 +371,36 @@ export class ExactOnline implements INodeType {
 
 					responseData = await getAllData.call(this, uri,limit,{},qs);
 					returnData = returnData.concat(responseData);
+				}
+
+				if(operation ==='post'){
+					const qs: IDataObject = {};
+					const body: IDataObject = {};
+					const data = this.getNodeParameter('data.field', itemIndex, 0) as IDataObject[];
+					const mandatoryFields = await getMandatoryFields.call(this,endpointConfig) as string[];
+
+					if(data.length>0){
+						for(var dataIndex = 0; dataIndex < data.length; dataIndex++){
+							const fieldName = data[dataIndex].field as string;
+							const fieldType = await getFieldType.call(this, endpointConfig,fieldName);
+							const fieldValue =data[dataIndex].value as string;
+							switch(fieldType){
+								case 'string':
+
+									break;
+								case 'boolean':
+
+									break;
+								case 'number':
+
+									break;
+							}
+						}
+					}
+
+
+					//responseData = await getAllData.call(this, uri,limit,{},qs);
+					//returnData = returnData.concat(responseData);
 				}
 
 

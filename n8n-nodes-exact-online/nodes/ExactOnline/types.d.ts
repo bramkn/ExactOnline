@@ -18,7 +18,8 @@ export type endpointFieldConfiguration = {
 	name:string,
 	type:string,
 	webhook?:boolean,
-	filter?:boolean
+	filter?:boolean,
+	mandatory:boolean,
 }
 
 export type endpointConfiguration = {

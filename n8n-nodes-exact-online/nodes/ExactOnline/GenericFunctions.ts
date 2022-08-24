@@ -121,6 +121,13 @@ export async function getFields(this: IExecuteFunctions | IExecuteSingleFunction
 
 }
 
+export async function getMandatoryFields(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
+	endpointConfig:endpointConfiguration): Promise<string[]> {
+
+			return endpointConfig.fields.filter(x => x.mandatory === true).map(a => a.name);
+
+}
+
 export async function getServiceOptions(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions){
 
 	return config.map(x  => x.service.toLocaleLowerCase());
