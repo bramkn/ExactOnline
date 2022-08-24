@@ -252,6 +252,7 @@ export class ExactOnline implements INodeType {
 					show: {
 						operation:[
 							'post',
+							'put'
 						],
 					},
 				},
@@ -432,7 +433,6 @@ export class ExactOnline implements INodeType {
 				}
 
 				if(operation ==='post'){
-					const qs: IDataObject = {};
 					const body: IDataObject = {};
 					const data = this.getNodeParameter('data.field', itemIndex, 0) as IDataObject[];
 					if(!data ){
@@ -467,11 +467,77 @@ export class ExactOnline implements INodeType {
 						}
 					}
 
-					responseData = await exactOnlineApiRequest.call(this,'Post', uri,body,qs,{headers: {Prefer:'return=representation'}});
+					responseData = await exactOnlineApiRequest.call(this,'Post', uri,body,{},{headers: {Prefer:'return=representation'}});
 					returnData = returnData.concat(responseData.body.d);
 				}
-//(guid'00000000-0000-0000-0000-000000000000')
 
+				if(operation === 'put'){
+					const id = this.getNodeParameter('id', itemIndex, '') as string;
+					if(id==''){
+						throw new NodeOperationError(this.getNode(), `Please enter an Id of a record to edit.`, {
+							itemIndex,
+						});
+					}
+					const body: IDataObject = {};
+					const data = this.getNodeParameter('data.field', itemIndex, 0) as IDataObject[];
+					if(!data ){
+						throw new NodeOperationError(this.getNode(), `Please include the fields and values for the item you want to create.`, {
+							itemIndex,
+						});
+					}
+
+					if(data.length>0){
+						for(var dataIndex = 0; dataIndex < data.length; dataIndex++){
+							const fieldName = data[dataIndex].fieldName as string;
+							const fieldType = await getFieldType.call(this, endpointConfig,fieldName);
+							const fieldValue =data[dataIndex].fieldValue as string;
+							switch(fieldType){
+								case 'string':
+									body[`${fieldName}`] = fieldValue;
+									break;
+								case 'boolean':
+									body[`${fieldName}`] = (fieldValue.toLocaleLowerCase()==='true') ;
+									break;
+								case 'number':
+									body[`${fieldName}`] = +fieldValue;
+									break;
+							}
+						}
+					}
+					const uriWithId= `${uri}(guid'${id}')`;
+					responseData = await exactOnlineApiRequest.call(this,'Put',uriWithId,body,{});
+					if(responseData.statusCode===204){
+						returnData = returnData.concat({msg:'Succesfully changed field values.'});
+					}
+					else{
+						throw new NodeOperationError(this.getNode(), `Something went wrong.`, {
+							itemIndex,
+						});
+					}
+
+
+				}
+
+				if(operation === 'delete'){
+					const id = this.getNodeParameter('id', itemIndex, '') as string;
+					if(id==''){
+						throw new NodeOperationError(this.getNode(), `Please enter an Id of a record to delete.`, {
+							itemIndex,
+						});
+					}
+					const uriWithId= `${uri}(guid'${id}')`;
+					responseData = await exactOnlineApiRequest.call(this,'Delete',uriWithId,{},{});
+					if(responseData.statusCode===204){
+						returnData = returnData.concat({msg:'Succesfully Deleted record.'});
+					}
+					else{
+						throw new NodeOperationError(this.getNode(), `Something went wrong.`, {
+							itemIndex,
+						});
+					}
+
+
+				}
 
 
 			} catch (error) {
