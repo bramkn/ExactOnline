@@ -1,0 +1,674 @@
+{
+  "meta": {
+    "instanceId": "78d825d87f785724cf43630a4288f440c19503b47b2cc3ea56a86f39cc755ff3"
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "functionCode": "const name = items[0].json.name;\nconst type = items[0].json.type;\nconst webhook = items[0].json.webhook;\nconst filter = items[0].json.filter;\nconst mandatory = items[0].json.MandatoryField;\nconst length = type.length;\nconst newItems =[];\n\nfor (var index = 0; index<length;index++) {\n  newItems.push(\n    {\n      json:{\n        name:name[index],\n        type:type[index],\n        webhook:(webhook[index]??'false').toLowerCase() ==='true',\n        filter:(filter[index]??'false)').toLowerCase() ==='true',\n        mandatory:(mandatory[index]??'false)').toLowerCase() ==='true',\n      }\n    }\n  );\n}\nif(newItems.length>0){\n  return newItems;\n}\nelse{\nreturn [{\n      json:{\n        name:null,\n        type:null,\n        webhook:null,\n        filter:null,\n        mandatory:null,\n      }\n    }];\n}\n\n"
+      },
+      "id": "f3c17cac-0559-49e5-9930-56b77e6954d0",
+      "name": "Function2",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        2260,
+        360
+      ],
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "functionCode": "// Code here will run once per input item.\n// More info and help: https://docs.n8n.io/nodes/n8n-nodes-base.functionItem\n// Tip: You can use luxon for dates and $jmespath for querying JSON structures\n\n// Add a new field called 'myNewField' to the JSON of the item\nconst array = item.WebhookAndFilter;\nconst arrayOfWebhook = [];\nconst arrayOfFilter = [];\nfor(var index=0;index<array.length;index++){\n  if(index % 2 == 0){\n    arrayOfWebhook.push(array[index]);\n  }\n  else{\n    arrayOfFilter.push(array[index]);\n  }\n}\n\nitem.webhook = arrayOfWebhook;\nitem.filter = arrayOfFilter;\ndelete item.WebhookAndFilter;\n\n// You can write logs to the browser console\nconsole.log('Done!');\n\nreturn item;"
+      },
+      "id": "8843a2e0-4c5b-40ab-8e03-9838086d400a",
+      "name": "Split Arrays",
+      "type": "n8n-nodes-base.functionItem",
+      "typeVersion": 1,
+      "position": [
+        2020,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "extractionValues": {
+          "values": [
+            {
+              "key": "name",
+              "cssSelector": "table tbody tr td input.showget",
+              "returnValue": "attribute",
+              "attribute": "name",
+              "returnArray": true
+            },
+            {
+              "key": "type",
+              "cssSelector": "table tbody tr td input.showget",
+              "returnValue": "attribute",
+              "attribute": "data-type",
+              "returnArray": true
+            },
+            {
+              "key": "WebhookAndFilter",
+              "cssSelector": "table tbody tr td.webhook-content",
+              "returnValue": "attribute",
+              "attribute": "data-sortdata",
+              "returnArray": true
+            },
+            {
+              "key": "MandatoryField",
+              "cssSelector": "table tbody tr td.showMandatory",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true
+        }
+      },
+      "id": "66b407a2-9fd2-4cf3-a425-4e9c48e4e1f4",
+      "name": "Get Table data",
+      "type": "n8n-nodes-base.htmlExtract",
+      "typeVersion": 1,
+      "position": [
+        1760,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Uri",
+              "cssSelector": "p#serviceUri"
+            },
+            {
+              "key": "methods",
+              "cssSelector": "[name=\"supportedmethods\"]",
+              "returnValue": "attribute",
+              "attribute": "value",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2f7d4d18-2c74-4b31-b829-0368ddcc2319",
+      "name": "Get general Data",
+      "type": "n8n-nodes-base.htmlExtract",
+      "typeVersion": 1,
+      "position": [
+        1760,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://start.exactonline.nl/docs/{{ $json[\"href\"] }}",
+        "responseFormat": "string",
+        "options": {}
+      },
+      "id": "a1954914-472f-4f84-b726-b1275de8e328",
+      "name": "Get Detail page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        1400,
+        300
+      ],
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "functionCode": "const service = items[0].json.service;\nconst href = items[0].json.href;\nconst endpoint = items[0].json.endpoint;\nconst webhook = items[0].json.Webhook;\nconst length = service.length;\nconst newItems =[];\n\nfor (var index = 0; index<length;index++) {\n  let webhookbool = false;\n  if(webhook[index]===null){\n    webhookbool = false;\n  }\n  else{\n    webhookbool=true\n  }\n  newItems.push(\n    {\n      json:{\n        service:service[index],\n        href:href[index],\n        endpoint:endpoint[index],\n        webhook:webhookbool,\n      }\n    }\n  );\n}\n\nreturn newItems;"
+      },
+      "id": "892bc20b-c41b-4075-afcd-413935638d1d",
+      "name": "Split Array data of main page",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        920,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "extractionValues": {
+          "values": [
+            {
+              "key": "service",
+              "cssSelector": "table tbody tr td.servicesVal",
+              "returnValue": "html",
+              "returnArray": true
+            },
+            {
+              "key": "href",
+              "cssSelector": "table tbody tr td a.Endpoints",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            },
+            {
+              "key": "endpoint",
+              "cssSelector": "table tbody tr td a.Endpoints",
+              "returnArray": true
+            },
+            {
+              "key": "Webhook",
+              "cssSelector": "table tbody tr td.HasWebhook , table tbody tr td.HasNoWebhook",
+              "returnValue": "html",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true
+        }
+      },
+      "id": "de9f853f-2b6d-4934-9d4d-32936a93617d",
+      "name": "Get Table data of main page",
+      "type": "n8n-nodes-base.htmlExtract",
+      "typeVersion": 1,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://start.exactonline.nl/docs/HlpRestAPIResources.aspx?SourceAction=10",
+        "responseFormat": "string",
+        "options": {}
+      },
+      "id": "018b0407-4e0f-4df4-a848-ea593a272471",
+      "name": "Get main page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "0289f32a-a0a2-4ad5-b37e-a2ca16951159",
+      "name": "Per Page",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Code here will run only once, no matter how many input items there are.\n// More info and help: https://docs.n8n.io/nodes/n8n-nodes-base.function\n// Tip: You can use luxon for dates and $jmespath for querying JSON structures\n\nitems = [\n  {json:{\"type\": null,\"jsonType\":null}},\n  {json:{\"type\": \"Edm.Binary\",\"jsonType\":\"string\"}},\n  {json:{\"type\": \"Edm.Boolean\",\"jsonType\":\"boolean\"}},\n  {json:{\"type\": \"Edm.Byte\",\"jsonType\":\"number\"}},\n  {json:{\"type\": \"Edm.DateTime\",\"jsonType\":\"string\"}},\n  {json:{\"type\": \"Edm.Decimal\",\"jsonType\":\"number\"}},\n  {json:{\"type\": \"Edm.Double\",\"jsonType\":\"number\"}},\n  {json:{\"type\": \"Edm.Single\",\"jsonType\":\"number\"}},\n  {json:{\"type\": \"Edm.Guid\",\"jsonType\":\"string\"}},\n  {json:{\"type\": \"Edm.Int16\",\"jsonType\":\"number\"}},\n  {json:{\"type\": \"Edm.Int32\",\"jsonType\":\"number\"}},\n  {json:{\"type\": \"Edm.Int64\",\"jsonType\":\"number\"}},\n  {json:{\"type\": \"Edm.SByte\",\"jsonType\":\"number\"}},\n  {json:{\"type\": \"Edm.String\",\"jsonType\":\"string\"}},\n  {json:{\"type\": \"Edm.Time\",\"jsonType\":\"string\"}},\n  {json:{\"type\": \"Edm.DateTimeOffset\",\"jsonType\":\"string\"}},\n]\n\n\n\nreturn items;"
+      },
+      "id": "52e6dcfb-c5d3-4429-a5bd-b8ecbea3a930",
+      "name": "Function",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        2260,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "mergeByKey",
+        "propertyName1": "type",
+        "propertyName2": "type"
+      },
+      "id": "22e62c6c-edec-40f0-936c-304a6e383bfb",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 1,
+      "position": [
+        2560,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "name",
+              "value": "={{ $json[\"name\"] }}"
+            },
+            {
+              "name": "type",
+              "value": "={{ $json[\"jsonType\"] }}"
+            },
+            {
+              "name": "mandatory",
+              "value": "={{ $json[\"mandatory\"] }}"
+            }
+          ],
+          "boolean": [
+            {
+              "name": "webhook",
+              "value": "={{ $json[\"webhook\"] }}"
+            },
+            {
+              "name": "filter",
+              "value": "={{ $json[\"filter\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "15c2c568-09d5-4cd3-a502-8d8f43e58cf6",
+      "name": "Set FieldObject",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        2780,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "aggregateItems",
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "fields"
+      },
+      "id": "264a3f1c-f1f3-4934-92c2-8d6d0f0c9974",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 1,
+      "position": [
+        3000,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "uri",
+              "value": "={{ $json[\"Uri\"] }}"
+            },
+            {
+              "name": "methods",
+              "value": "={{ $json[\"methods\"] }}"
+            },
+            {
+              "name": "service",
+              "value": "={{ $node[\"Per Page\"].json[\"service\"] }}"
+            },
+            {
+              "name": "endpoint",
+              "value": "={{ $node[\"Per Page\"].json[\"endpoint\"] }}"
+            },
+            {
+              "name": "doc",
+              "value": "={{$node[\"Get Detail page\"].parameter[\"url\"]}}{{ $node[\"Per Page\"].json[\"href\"] }}"
+            }
+          ],
+          "boolean": [
+            {
+              "name": "webhook",
+              "value": "={{ $node[\"Per Page\"].json[\"webhook\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1488358d-8029-4724-898b-63ae28ff05fb",
+      "name": "Set header",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        3220,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$node[\"Per Page\"].context[\"noItemsLeft\"]}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "89716924-dfea-4144-9860-238057f5d778",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3800,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "mergeByKey",
+        "propertyName1": "doc",
+        "propertyName2": "doc"
+      },
+      "id": "bea3d3d0-1da3-4f13-92af-51042bae5f35",
+      "name": "Combine",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 1,
+      "position": [
+        3580,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const allData = []\n\nlet counter = 0;\ndo {\n  try {\n    const items = $items(\"Combine\", 0, counter);\n    allData.push.apply(allData, items);\n  } catch (error) {\n    return allData;  \n  }\n  counter++;\n} while(true);\n\n"
+      },
+      "name": "Combine all batches",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        4060,
+        340
+      ],
+      "id": "15d8204c-9b1f-4c1f-a01b-8faa6f310d71"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "operation": "edit",
+        "owner": "bramkn",
+        "repository": "ExactOnline",
+        "filePath": "n8n-nodes-exact-online/nodes/ExactOnline/fieldConfigArray.json",
+        "fileContent": "={{ JSON.stringify($json[\"data\"]) }}",
+        "commitMessage": "FieldConfig from n8n flow"
+      },
+      "id": "028196ad-d809-4d6b-bbf8-4ba9a939ad48",
+      "name": "GitHub",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        4560,
+        340
+      ],
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "1",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "aggregateItems",
+        "aggregate": "aggregateAllItemData"
+      },
+      "id": "03db381a-da97-426d-8130-09c4e6a20a2c",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 1,
+      "position": [
+        4280,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "doc",
+              "value": "={{$node[\"Get Detail page\"].parameter[\"url\"]}}{{ $node[\"Per Page\"].json[\"href\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "67e9e370-8b04-49df-93cc-3379b0147885",
+      "name": "Set Key",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        3220,
+        380
+      ]
+    }
+  ],
+  "connections": {
+    "Function2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Arrays": {
+      "main": [
+        [
+          {
+            "node": "Function2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Function",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Table data": {
+      "main": [
+        [
+          {
+            "node": "Split Arrays",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get general Data": {
+      "main": [
+        [
+          {
+            "node": "Set header",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Detail page": {
+      "main": [
+        [
+          {
+            "node": "Get Table data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get general Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Array data of main page": {
+      "main": [
+        [
+          {
+            "node": "Per Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Table data of main page": {
+      "main": [
+        [
+          {
+            "node": "Split Array data of main page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get main page": {
+      "main": [
+        [
+          {
+            "node": "Get Table data of main page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Per Page": {
+      "main": [
+        [
+          {
+            "node": "Get Detail page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Function": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Set FieldObject",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set FieldObject": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Set Key",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set header": {
+      "main": [
+        [
+          {
+            "node": "Combine",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Combine all batches",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Per Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine all batches": {
+      "main": [
+        [
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Key": {
+      "main": [
+        [
+          {
+            "node": "Combine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
