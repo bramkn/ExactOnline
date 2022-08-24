@@ -82,6 +82,8 @@ export class ExactOnline implements INodeType {
 					show:	{
 						operation: [
 							'get',
+							'put',
+							'delete',
 						],
 					},
 				}
@@ -433,38 +435,42 @@ export class ExactOnline implements INodeType {
 					const qs: IDataObject = {};
 					const body: IDataObject = {};
 					const data = this.getNodeParameter('data.field', itemIndex, 0) as IDataObject[];
+					if(!data ){
+						throw new NodeOperationError(this.getNode(), `Please include the fields and values for the item you want to create.`, {
+							itemIndex,
+						});
+					}
 					const fieldsEntered = data.map(x=>x.fieldName);
 					const mandatoryFields = await getMandatoryFields.call(this,endpointConfig) as string[];
 					const mandatoryFieldsNotIncluded = mandatoryFields.filter(x=> !fieldsEntered.includes(x));
 					if(mandatoryFieldsNotIncluded.length>0){
-						//error deze fields moeten worden opgegeven en zijn dat niet.
+						throw new NodeOperationError(this.getNode(), `The following fields are mandatory and did not get used: '${mandatoryFieldsNotIncluded.join(', ')}'`, {
+							itemIndex,
+						});
 					}
-console.log(data);
-console.log(mandatoryFieldsNotIncluded.length);
 					if(data.length>0){
 						for(var dataIndex = 0; dataIndex < data.length; dataIndex++){
-							const fieldName = data[dataIndex].field as string;
+							const fieldName = data[dataIndex].fieldName as string;
 							const fieldType = await getFieldType.call(this, endpointConfig,fieldName);
-							const fieldValue =data[dataIndex].value as string;
+							const fieldValue =data[dataIndex].fieldValue as string;
 							switch(fieldType){
 								case 'string':
-
+									body[`${fieldName}`] = fieldValue;
 									break;
 								case 'boolean':
-
+									body[`${fieldName}`] = (fieldValue.toLocaleLowerCase()==='true') ;
 									break;
 								case 'number':
-
+									body[`${fieldName}`] = +fieldValue;
 									break;
 							}
 						}
 					}
 
-
-					//responseData = await getAllData.call(this, uri,limit,{},qs);
-					//returnData = returnData.concat(responseData);
+					responseData = await exactOnlineApiRequest.call(this,'Post', uri,body,qs,{headers: {Prefer:'return=representation'}});
+					returnData = returnData.concat(responseData.body.d);
 				}
-
+//(guid'00000000-0000-0000-0000-000000000000')
 
 
 
