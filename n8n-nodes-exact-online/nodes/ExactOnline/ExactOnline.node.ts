@@ -232,6 +232,52 @@ export class ExactOnline implements INodeType {
 							},
 						],
 					},
+				],
+			},
+			{
+				displayName: 'Field Data',
+				name: 'data',
+				placeholder: 'Add field data',
+				type: 'fixedCollection',
+				typeOptions: {
+					loadOptionsDependsOn:['service','resource','operation'],
+					multipleValues: true,
+					sortable: true,
+				},
+				description: 'Field Data',
+				default: {},
+				displayOptions: {
+					show: {
+						operation:[
+							'post',
+						],
+					},
+				},
+				options: [
+					{
+						name: 'field',
+						displayName: 'field',
+						values: [
+							{
+								displayName: 'Field name',
+								name: 'fieldName',
+								type: 'options',
+								typeOptions: {
+									loadOptionsMethod: 'getFieldsData',
+								},
+								default: '',
+								description: 'Field name to include in item.',
+							},
+							{
+								displayName: 'Field Value',
+								name: 'fieldValue',
+								type: 'string',
+								default: '',
+								description: 'Value for the field to add/edit.',
+							},
+						],
+					},
+
 
 
 				],
@@ -293,6 +339,16 @@ export class ExactOnline implements INodeType {
 				return toFieldFilterOptions(fields as endpointFieldConfiguration[]);
 			},
 
+			async getFieldsData(this: ILoadOptionsFunctions) {
+				const service = this.getNodeParameter('service', 0) as string;
+				const resource = this.getNodeParameter('resource', 0) as string;
+				const endpointConfig = await getEndpointConfig.call(this,service,resource) as endpointConfiguration;
+				const exclude = ['Created','Creator','CreatorFullName','Modified','Modifier','ModifierFullName'];
+
+				const fields = endpointConfig.fields.filter(x=> !exclude.includes(x.name)) as endpointFieldConfiguration[];
+
+				return toFieldFilterOptions(fields as endpointFieldConfiguration[]);
+			},
 
 
 		},
