@@ -44,6 +44,7 @@ You will then see your apps. There is a choice between production and test. Clic
 
 ![Apps](https://github.com/bramkn/ExactOnline/blob/master/Images/Apps.png)
 
+Open a tab with n8n and go to the Exact Online Node, if you do not have it open already.
 Create a new credentials entry or modify an existing one in the app.
 
 ![Apps](https://github.com/bramkn/ExactOnline/blob/master/Images/credentials.png)
@@ -59,6 +60,8 @@ Should look a bit like this:
 After you can Click connect / reconnect and it might give you a pop-up to login to Exact Online if you aren't logged in yet or you need to confirm the connection.
 
 ## Features v1.0
+
+All posible API requests were scraped from the Exact Online docs. This was used to create a config file. some quality of life features were added and more will be added in the future.
 
 
 ## Using the scraper

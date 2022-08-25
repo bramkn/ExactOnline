@@ -45,6 +45,7 @@ export class ExactOnline implements INodeType {
 				name: 'service',
 				type: 'options',
 				typeOptions: {
+					loadOptionsDependsOn:['division'],
 					loadOptionsMethod: 'getServices',
 				},
 				default: '',
