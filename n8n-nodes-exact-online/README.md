@@ -6,7 +6,8 @@ This node was developed during the n8n node-athon. This is version one with a ba
 During the development the API reference docs were scraped with a n8n workflow. This Workflow was also included in the repo.
 There were 396 pages scraped and processed into a config file.
 
-The node is usable with a Developer account which can be created for free at Exact Online's website.
+The node is usable with a Developer account which can be created for free at Exact Online's website. This way you can test the node however you like it without compromising your production environment.
+After you can easily connect it with a production environment and automate your workflows.
 
 ## Exact Online
 
@@ -15,14 +16,14 @@ Exact Online is an ERP solution that is offered as a cloud service. Most compani
 ## Install instructions
 
 The node can be installed with the community package feature. It can also be installed manually. 
-If you need more information on that please refer to the n8n docs.
+If you need more information on that, please refer to the n8n docs.
 
-# Set-up instructions
+# Setup instructions
 
-To set-up this node you will have to create an App in Exact online. Below there is a step by step guide on how to do this.
-In the future there might be a possibility to simply select it from the app store of Exact Online.
+To setup this node you will have to create an App in Exact online. Below there is a step by step guide on how to do this.
+In the future there might be a possibility to simply select it from the app store of Exact Online. I will be looking into getting it approved at a later date.
 
-The Images are mostly in Dutch, but should be clear enough for you to follow along.
+The Images should be clear enough for you to follow along.
 
 Login into Exact Online by clicking on the marked button
 
@@ -39,9 +40,13 @@ Click on the manage apps button
 
 ![ManageApps2](https://github.com/bramkn/ExactOnline/blob/master/Images/manageapps2.png)
 
-You will then see your apps. There is a choice between production and test. Select production if you want to use this on your Exact Online environment. Click on register an app
+You will then see your apps. There is a choice between production and test. Click on register an app.
 
 ![Apps](https://github.com/bramkn/ExactOnline/blob/master/Images/Apps.png)
+
+Create a new credentials entry or modify an existing one in the app.
+
+![Apps](https://github.com/bramkn/ExactOnline/blob/master/Images/credentials.png)
 
 You should see the following information. You need this for the connection in the n8n node.
 Copy the callback URL from n8n into Exact Online. And fill in the rest of the information in the credentials of n8n.
