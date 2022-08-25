@@ -18,7 +18,7 @@ Exact Online is an ERP solution that is offered as a cloud service. Most compani
 The node can be installed with the community package feature. It can also be installed manually. 
 If you need more information on that, please refer to the n8n docs.
 
-# Setup instructions
+## Setup instructions
 
 To setup this node you will have to create an App in Exact online. Below there is a step by step guide on how to do this.
 In the future there might be a possibility to simply select it from the app store of Exact Online. I will be looking into getting it approved at a later date.
@@ -64,33 +64,16 @@ After you can Click connect / reconnect and it might give you a pop-up to login 
 All posible API requests were scraped from the Exact Online docs. This was used to create a config file. some quality of life features were added and more will be added in the future.
 
 
+
 ## Using the scraper
 
 You do not need an account for the scraper.
-
-## Using this starter
-
-These are the basic steps for working with the starter. For detailed guidance on creating and publishing nodes, refer to the [documentation](https://docs.n8n.io/integrations/creating-nodes/).
-
-1. [Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template repository.
-2. Clone your new repo:
-    ```
-    git clone https://github.com/<your organization>/<your-repo-name>.git
-    ```
-3. Run `npm i` to install dependencies.
-4. Open the project in your editor.
-5. Browse the examples in `/nodes` and `/credentials`. Modify the examples, or replace them with your own nodes.
-6. Update the `package.json` to match your details.
-7. Run `npm run lint` to check for errors or `npm run lintfix` to automatically fix errors when possible.
-8. Test your node locally. Refer to [Run your node locally](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) for guidance.
-9. Replace this README with documentation for your node. Use the [README_TEMPLATE](README_TEMPLATE.md) to get started.
-10. Update the LICENSE file to use your details.
-11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
-
-## More information
-
-Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
+Paste the JSON into an n8n workflow.
+Set the Github Authorization
+The first time you might want to set the Github node to create the file.
+Start
+Done -> make sure to format the output file as this will improve the readability ;-)
 
 ## License
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+[ChickenDance](https://github.com/bramkn/ExactOnline/blob/master/n8n-nodes-exact-online/LICENSE.md)
