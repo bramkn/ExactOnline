@@ -66,7 +66,21 @@ After you can Click connect / reconnect and it might give you a pop-up to login 
 
 All posible API requests were scraped from the Exact Online docs. This was used to create a config file. some quality of life features were added and more will be added in the future.
 
+You can choose al Devisions your account has access to. And all data you have access to will be able to be retrieved.
+Somtimes you do not retrieve any data that is because there is non or you do not have access.
 
+you can use the dropdowns to select what you want to do.
+
+![Apps](https://github.com/bramkn/ExactOnline/blob/master/Images/options1.png)
+
+when retrieving data you can add filters and choose what fields you want to include. You can both name field to be included and excluded. Some Api endpoints allow you to retrieve all fields when not selecting any and some require you to select the fields you want to include. By setting the slider to exclude the selected fields and not selecting any fields the node will automatically fetch all fields available.
+
+![Apps](https://github.com/bramkn/ExactOnline/blob/master/Images/options3.png)
+
+
+when you want to create a new record or edit it, you will be able to add fields and select fields from a list of options for that specific resource.
+
+![Apps](https://github.com/bramkn/ExactOnline/blob/master/Images/options1.png)
 
 ## Using the scraper
 
