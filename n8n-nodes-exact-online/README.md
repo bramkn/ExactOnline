@@ -91,6 +91,10 @@ when you want to create a new record or edit it, you will be able to add fields 
 - Start
 - Done -> make sure to format the output file as this will improve the readability ;-)
 
+## More info on the API
+
+[Exact Online ref](https://start.exactonline.nl/docs/HlpRestAPIResources.aspx?SourceAction=10)
+
 ## License
 
 [ChickenDance](https://github.com/bramkn/ExactOnline/blob/master/n8n-nodes-exact-online/LICENSE.md)
