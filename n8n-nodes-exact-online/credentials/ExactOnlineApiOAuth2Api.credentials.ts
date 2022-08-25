@@ -5,11 +5,11 @@ import {
 	INodeProperties,
 } from 'n8n-workflow';
 
-export class ExactOnline implements ICredentialType {
-	name = 'exactOnline';
+export class ExactOnlineApiOAuth2Api implements ICredentialType {
+	name = 'exactOnlineApiOAuth2Api';
 	extends = ['oAuth2Api'];
 	icon = 'file:exactOnline.svg';
-	displayName = 'Exact Online API';
+	displayName = 'Exact Online API OAuth2 API';
 	properties: INodeProperties[] = [
 		{
 			displayName: 'Grant Type',

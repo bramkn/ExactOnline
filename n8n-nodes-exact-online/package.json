@@ -1,16 +1,16 @@
 {
   "name": "n8n-nodes-exact-online",
   "version": "0.1.0",
-  "description": "",
+  "description": "Exact Online Community node for n8n",
   "keywords": [
     "n8n-community-node-package",
     "n8n-node-athon"
   ],
-  "license": "ChickenDance",
-  "homepage": "",
+  "license": "MIT",
+  "homepage": "https://github.com/bramkn/ExactOnline",
   "author": {
-    "name": "",
-    "email": ""
+    "name": "Bram Knuever",
+    "email": "bram@knitco.nl"
   },
   "repository": {
     "type": "git",

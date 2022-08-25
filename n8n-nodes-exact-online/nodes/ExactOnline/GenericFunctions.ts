@@ -10,8 +10,7 @@ import {
 
 import { IDataObject, IOAuth2Options, NodeApiError } from 'n8n-workflow';
 import { endpointConfiguration, endpointFieldConfiguration, LoadedDivision, LoadedFields, LoadedOptions } from './types';
-import { accountancyEndpoints, crmEndpoints, financialEndpoints, financialTransactionEndpoints } from './endpointDescription';
-import { fieldsFinancialTransaction } from './FieldDescription';
+
 
 export async function exactOnlineApiRequest(
 	this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
@@ -20,10 +19,10 @@ export async function exactOnlineApiRequest(
 	body: IDataObject = {},
 	qs: IDataObject = {},
 	option: IDataObject = {},
-	nextPageUrl: string = '',
+	nextPageUrl = '',
 	// tslint:disable-next-line:no-any
 ): Promise<any> {
-	const credentials = await this.getCredentials('exactOnline');
+	const credentials = await this.getCredentials('exactOnlineApiOAuth2');
 	let options: OptionsWithUri = {
 		headers: {
 			'Content-Type': 'application/json',
@@ -51,7 +50,7 @@ export async function exactOnlineApiRequest(
 		};
 
 		//@ts-ignore
-		const response = await this.helpers.requestOAuth2.call(this, 'exactOnline', options, oAuth2Options);
+		const response = await this.helpers.requestOAuth2.call(this, 'exactOnlineApiOAuth2', options, oAuth2Options);
 		//@ts-ignore
 		return response;
 	} catch (error) {
@@ -83,7 +82,7 @@ export async function getData(this: IExecuteFunctions | IExecuteSingleFunctions 
 
 export async function getAllData(this: IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions | IHookFunctions,
 	uri: string,
-	limit: number = 60,
+	limit = 60,
 	body: IDataObject = {},
 	qs: IDataObject = {},
 	option: IDataObject = {},
@@ -169,13 +168,13 @@ export const toDivisionOptions = (items: LoadedDivision[]) =>
 	items.map(({ Code, CustomerName, Description }) => ({ name: `${CustomerName} : ${Description}`, value: Code }));
 
 export const toOptions = (items: LoadedOptions[]) =>
-	items.map(({ value, name }) => ({ name: name, value: value }));
+	items.map(({ value, name }) => ({ name, value }));
 
 export const toFieldSelectOptions = (items: LoadedFields[]) =>
-	items.map(({ name }) => ({ name: name, value: name }));
+	items.map(({ name }) => ({ name, value: name }));
 
 export const toFieldFilterOptions = (items: endpointFieldConfiguration[]) =>
-items.map(({ name }) => ({ name: name, value: name }));
+items.map(({ name }) => ({ name, value: name }));
 
 export const toOptionsFromStringArray = (items:string[]) =>
 	items.map((x) => ({name:x.charAt(0).toUpperCase() + x.slice(1), value:x}));

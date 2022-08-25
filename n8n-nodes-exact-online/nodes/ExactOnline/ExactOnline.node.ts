@@ -25,23 +25,23 @@ export class ExactOnline implements INodeType {
 		outputs: ['main'],
 		credentials: [
 			{
-				name: 'exactOnline',
+				name: 'exactOnlineApiOAuth2Api',
 				required: true,
 			},
 		],
 		properties: [
 			{
-				displayName: 'Division',
+				displayName: 'Division Name or ID',
 				name: 'division',
 				type: 'options',
 				typeOptions: {
 					loadOptionsMethod: 'getDivisions',
 				},
 				default: '',
-				description: 'Division to get data from.',
+				description: 'Division to get data from. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>.',
 			},
 			{
-				displayName: 'Service',
+				displayName: 'Service Name or ID',
 				name: 'service',
 				type: 'options',
 				typeOptions: {
@@ -49,36 +49,38 @@ export class ExactOnline implements INodeType {
 					loadOptionsMethod: 'getServices',
 				},
 				default: '',
-				description: 'Service to connecto to.',
+				description: 'Service to connecto to. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>.',
 			},
 			{
-				displayName: 'Resource',
+				displayName: 'Resource Name or ID',
 				name: 'resource',
 				type: 'options',
+				noDataExpression: true,
 				typeOptions: {
 					loadOptionsDependsOn:['service'],
 					loadOptionsMethod: 'getResources',
 				},
 				default: '',
-				description: 'Resource to connect to.',
+				description: 'Resource to connect to. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>.',
 			},
 			{
-				displayName: 'Operation',
+				displayName: 'Operation Name or ID',
 				name: 'operation',
 				type: 'options',
+				noDataExpression: true,
 				typeOptions: {
 					loadOptionsDependsOn:['resource'],
 					loadOptionsMethod: 'getOperations',
 				},
 				default: '',
-				description: 'Operation to use.',
+				description: 'Operation to use. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>.',
 			},
 			{
-				displayName: 'Id',
+				displayName: 'ID',
 				name: 'id',
 				type: 'string',
 				default: '',
-				description: 'Id of record.',
+				description: 'ID of record',
 				displayOptions:{
 					show:	{
 						operation: [
@@ -87,53 +89,56 @@ export class ExactOnline implements INodeType {
 							'delete',
 						],
 					},
-				}
+				},
 			},
 			{
 				displayName: 'Limit',
 				name: 'limit',
 				type: 'number',
-				default: 60,
-				description: 'Limit the number of records retrieved.',
+				typeOptions: {
+					minValue: 1,
+				},
+				default: 50,
+				description: 'Max number of results to return',
 				displayOptions:{
 					show:	{
 						operation: [
 							'getAll',
 						],
 					},
-				}
+				},
 			},
 			{
-				displayName: 'Selected fields are excluded',
+				displayName: 'Selected Fields Are Excluded',
 				name: 'excludeSelection',
 				type: 'boolean',
 				default: false,
-				description: 'The selected fields are excluded instead of included. Select nothing to retrieve all fields.',
+				description: 'Whether the selected fields are excluded instead of included. Select nothing to retrieve all fields.',
 				displayOptions:{
 					show:	{
 						operation: [
 							'getAll',
 						],
 					},
-				}
+				},
 			},
 			{
-				displayName: 'Fields to get',
+				displayName: 'Fields to Get',
 				name: 'selectedFields',
 				type: 'multiOptions',
 				typeOptions: {
 					loadOptionsDependsOn:['service','resource','operation'],
 					loadOptionsMethod: 'getFields',
 				},
-				default: '',
-				description: 'Fields to retrieve from Exact Online',
+				default: [],
+				description: 'Fields to retrieve from Exact Online. Choose from the list, or specify IDs using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>.',
 				displayOptions:{
 					show:{
 						operation:[
 							'getAll',
-						]
-					}
-				}
+						],
+					},
+				},
 			},
 			{
 				displayName: 'Conjunction',
@@ -142,22 +147,22 @@ export class ExactOnline implements INodeType {
 				options:[
 					{
 						name:'And',
-						value:'and'
+						value:'and',
 					},
 					{
 						name:'Or',
-						value:'or'
+						value:'or',
 					},
 				],
 				default: 'and',
-				description: 'Conjunction to use in filter.',
+				description: 'Conjunction to use in filter',
 				displayOptions:{
 					show:{
 						operation:[
 							'getAll',
-						]
-					}
-				}
+						],
+					},
+				},
 			},
 			{
 				displayName: 'Filter',
@@ -169,7 +174,6 @@ export class ExactOnline implements INodeType {
 					multipleValues: true,
 					sortable: true,
 				},
-				description: 'Filter',
 				default: {},
 				displayOptions: {
 					show: {
@@ -184,54 +188,54 @@ export class ExactOnline implements INodeType {
 						displayName: 'Filter',
 						values: [
 							{
-								displayName: 'Field',
+								displayName: 'Field Name or ID',
 								name: 'field',
 								type: 'options',
 								typeOptions: {
 									loadOptionsMethod: 'getFieldsFilter',
 								},
 								default: '',
-								description: 'Field name to filter.',
+								description: 'Field name to filter. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>.',
 							},
 							{
 								displayName: 'Operator',
 								name: 'operator',
 								type: 'options',
-								options:[
+								options: [
 									{
-										name:'Equal',
-										value:'eq'
+										name: 'Equal',
+										value: 'eq',
 									},
 									{
-										name:'Not equal',
-										value:'ne'
+										name: 'Greater Than',
+										value: 'gt',
 									},
 									{
-										name:'Greater than',
-										value:'gt'
+										name: 'Greater than or Equal',
+										value: 'ge',
 									},
 									{
-										name:'Greater than or equal',
-										value:'ge'
+										name: 'Less Than',
+										value: 'lt',
 									},
 									{
-										name:'Less than',
-										value:'lt'
+										name: 'Less than or Equal',
+										value: 'le',
 									},
 									{
-										name:'Less than or equal',
-										value:'le'
+										name: 'Not Equal',
+										value: 'ne',
 									},
 								],
-								default: '',
-								description: 'Operator to use in filter.',
+								default: 'eq',
+								description: 'Operator to use in filter',
 							},
 							{
 								displayName: 'Value',
 								name: 'value',
 								type: 'string',
 								default: '',
-								description: 'Value to apply in the filter.',
+								description: 'Value to apply in the filter',
 							},
 						],
 					},
@@ -247,48 +251,41 @@ export class ExactOnline implements INodeType {
 					multipleValues: true,
 					sortable: true,
 				},
-				description: 'Field Data',
 				default: {},
 				displayOptions: {
 					show: {
 						operation:[
 							'post',
-							'put'
+							'put',
 						],
 					},
 				},
 				options: [
 					{
 						name: 'field',
-						displayName: 'field',
+						displayName: 'Field',
 						values: [
 							{
-								displayName: 'Field name',
+								displayName: 'Field Name or ID',
 								name: 'fieldName',
 								type: 'options',
 								typeOptions: {
 									loadOptionsMethod: 'getFieldsData',
 								},
 								default: '',
-								description: 'Field name to include in item.',
+								description: 'Field name to include in item. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>.',
 							},
 							{
 								displayName: 'Field Value',
 								name: 'fieldValue',
 								type: 'string',
 								default: '',
-								description: 'Value for the field to add/edit.',
+								description: 'Value for the field to add/edit',
 							},
 						],
 					},
-
-
-
 				],
-
-
 			},
-
 		],
 	};
 
@@ -347,6 +344,7 @@ export class ExactOnline implements INodeType {
 				const service = this.getNodeParameter('service', 0) as string;
 				const resource = this.getNodeParameter('resource', 0) as string;
 				const endpointConfig = await getEndpointConfig.call(this,service,resource) as endpointConfiguration;
+				//exclude auto generated values, these cannot be set by the user.
 				const exclude = ['Created','Creator','CreatorFullName','Modified','Modifier','ModifierFullName'];
 
 				const fields = endpointConfig.fields.filter(x=> !exclude.includes(x.name)) as endpointFieldConfiguration[];
@@ -409,7 +407,7 @@ export class ExactOnline implements INodeType {
 					}
 					const filters = [];
 					if(filter.length>0){
-						for(var filterIndex = 0; filterIndex < filter.length; filterIndex++){
+						for(let filterIndex = 0; filterIndex < filter.length; filterIndex++){
 							const fieldName = filter[filterIndex].field as string;
 							const fieldType = await getFieldType.call(this, endpointConfig,fieldName);
 							const fieldValue =filter[filterIndex].value as string;
@@ -422,6 +420,8 @@ export class ExactOnline implements INodeType {
 									break;
 								case 'number':
 									filters.push(`${fieldName} ${filter[filterIndex].operator} ${filter[filterIndex].value}`);
+									break;
+								default:
 									break;
 							}
 						}
@@ -449,7 +449,7 @@ export class ExactOnline implements INodeType {
 						});
 					}
 					if(data.length>0){
-						for(var dataIndex = 0; dataIndex < data.length; dataIndex++){
+						for(let dataIndex = 0; dataIndex < data.length; dataIndex++){
 							const fieldName = data[dataIndex].fieldName as string;
 							const fieldType = await getFieldType.call(this, endpointConfig,fieldName);
 							const fieldValue =data[dataIndex].fieldValue as string;
@@ -463,6 +463,8 @@ export class ExactOnline implements INodeType {
 								case 'number':
 									body[`${fieldName}`] = +fieldValue;
 									break;
+								default:
+									break;
 							}
 						}
 					}
@@ -473,7 +475,7 @@ export class ExactOnline implements INodeType {
 
 				if(operation === 'put'){
 					const id = this.getNodeParameter('id', itemIndex, '') as string;
-					if(id==''){
+					if(id === ''){
 						throw new NodeOperationError(this.getNode(), `Please enter an Id of a record to edit.`, {
 							itemIndex,
 						});
@@ -487,7 +489,7 @@ export class ExactOnline implements INodeType {
 					}
 
 					if(data.length>0){
-						for(var dataIndex = 0; dataIndex < data.length; dataIndex++){
+						for(let dataIndex = 0; dataIndex < data.length; dataIndex++){
 							const fieldName = data[dataIndex].fieldName as string;
 							const fieldType = await getFieldType.call(this, endpointConfig,fieldName);
 							const fieldValue =data[dataIndex].fieldValue as string;
@@ -501,12 +503,14 @@ export class ExactOnline implements INodeType {
 								case 'number':
 									body[`${fieldName}`] = +fieldValue;
 									break;
+								default:
+									break;
 							}
 						}
 					}
 					const uriWithId= `${uri}(guid'${id}')`;
 					responseData = await exactOnlineApiRequest.call(this,'Put',uriWithId,body,{});
-					if(responseData.statusCode===204){
+					if(responseData.statusCode === 204){
 						returnData = returnData.concat({msg:'Succesfully changed field values.'});
 					}
 					else{
@@ -520,14 +524,14 @@ export class ExactOnline implements INodeType {
 
 				if(operation === 'delete'){
 					const id = this.getNodeParameter('id', itemIndex, '') as string;
-					if(id==''){
+					if(id === ''){
 						throw new NodeOperationError(this.getNode(), `Please enter an Id of a record to delete.`, {
 							itemIndex,
 						});
 					}
 					const uriWithId= `${uri}(guid'${id}')`;
 					responseData = await exactOnlineApiRequest.call(this,'Delete',uriWithId,{},{});
-					if(responseData.statusCode===204){
+					if(responseData.statusCode === 204){
 						returnData = returnData.concat({msg:'Succesfully Deleted record.'});
 					}
 					else{
