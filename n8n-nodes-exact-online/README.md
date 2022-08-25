@@ -18,6 +18,9 @@ Exact Online is an ERP solution that is offered as a cloud service. Most compani
 The node can be installed with the community package feature. It can also be installed manually. 
 If you need more information on that, please refer to the n8n docs.
 
+Make sure to restart n8n when you have installed the node.
+> :warning: **Make sure to restart n8n when you have installed the node.**
+
 ## Setup instructions
 
 To setup this node you will have to create an App in Exact online. Below there is a step by step guide on how to do this.

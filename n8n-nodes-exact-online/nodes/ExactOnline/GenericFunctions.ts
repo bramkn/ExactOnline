@@ -22,7 +22,7 @@ export async function exactOnlineApiRequest(
 	nextPageUrl = '',
 	// tslint:disable-next-line:no-any
 ): Promise<any> {
-	const credentials = await this.getCredentials('exactOnlineApiOAuth2');
+	const credentials = await this.getCredentials('exactOnlineApiOAuth2Api');
 	let options: OptionsWithUri = {
 		headers: {
 			'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ export async function exactOnlineApiRequest(
 		};
 
 		//@ts-ignore
-		const response = await this.helpers.requestOAuth2.call(this, 'exactOnlineApiOAuth2', options, oAuth2Options);
+		const response = await this.helpers.requestOAuth2.call(this, 'exactOnlineApiOAuth2Api', options, oAuth2Options);
 		//@ts-ignore
 		return response;
 	} catch (error) {

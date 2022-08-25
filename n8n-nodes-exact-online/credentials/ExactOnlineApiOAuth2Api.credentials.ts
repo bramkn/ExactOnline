@@ -53,7 +53,7 @@ export class ExactOnlineApiOAuth2Api implements ICredentialType {
 			displayName: 'Country',
 			name: 'country',
 			type: 'options',
-			default: 'com',
+			default: 'nl',
 			options: [
 					{
 							name: 'Belguim',
