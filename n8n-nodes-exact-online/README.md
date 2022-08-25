@@ -67,12 +67,12 @@ All posible API requests were scraped from the Exact Online docs. This was used 
 
 ## Using the scraper
 
--You do not need an account for the scraper.
--Paste the JSON into an n8n workflow.
--Set the Github Authorization
--The first time you might want to set the Github node to create the file.
--Start
--Done -> make sure to format the output file as this will improve the readability ;-)
+- You do not need an account for the scraper.
+- Paste the JSON into an n8n workflow.
+- Set the Github Authorization
+- The first time you might want to set the Github node to create the file.
+- Start
+- Done -> make sure to format the output file as this will improve the readability ;-)
 
 ## License
 
