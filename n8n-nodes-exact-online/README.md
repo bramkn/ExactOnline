@@ -80,7 +80,7 @@ when retrieving data you can add filters and choose what fields you want to incl
 
 when you want to create a new record or edit it, you will be able to add fields and select fields from a list of options for that specific resource.
 
-![Apps](https://github.com/bramkn/ExactOnline/blob/master/Images/options1.png)
+![Apps](https://github.com/bramkn/ExactOnline/blob/master/Images/options2.png)
 
 ## Using the scraper
 
