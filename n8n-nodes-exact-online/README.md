@@ -1,23 +1,28 @@
 ![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
 
-# n8n-nodes-starter
+# n8n-nodes-exact-online
 
-This repo contains example nodes to help you get started building your own custom integrations for [n8n](n8n.io). It includes the node linter and other dependencies.
+This node was developed during the n8n node-athon. This is version one with a basic CRUD implemented.
+During the development the API reference docs were scraped with a n8n workflow. This Workflow was also included in the repo.
+There were 396 pages scraped and processed into a config file.
 
-To make your custom node available to the community, you must create it as an npm package, and [submit it to the npm registry](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+The node is usable with a Developer account which can be created for free at Exact Online's website.
 
-## Prerequisites
+## Exact Online
 
-You need the following installed on your development machine:
+Exact Online is an ERP solution that is offered as a cloud service. Most companies that use exact use it as their main application and have all kinds of applications they use around that. Exact has been expanding over the years and they now offer Exact Online internationally.
 
-* [git](https://git-scm.com/downloads)
-* Node.js and npm. Minimum version Node 16. You can find instructions on how to install both using nvm (Node Version Manager) for Linux, Mac, and WSL [here](https://github.com/nvm-sh/nvm). For Windows users, refer to Microsoft's guide to [Install NodeJS on Windows](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
-* Install n8n with:
-	```
-	npm install n8n -g
-	```
-* Recommended: follow n8n's guide to [set up your development environment](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/).
+## Install instructions
 
+The node can be installed with the community package feature. It can also be installed manually. 
+If you need more information on that please refer to the n8n docs.
+
+## Features v1.0
+
+
+## Using the scraper
+
+You do not need an account for the scraper.
 
 ## Using this starter
 
