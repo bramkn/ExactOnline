@@ -42,9 +42,7 @@ You will then see your apps. There is a choice between production and test. Sele
 You should see the following information. You need this for the connection in the n8n node.
 Copy the callback URL from n8n into Exact Online. And fill in the rest of the information in the credentials of n8n.
 Should look a bit like this:
-![Apps](https://github.com/bramkn/ExactOnline/blob/master/Images/oauth2Exact.png)
 
-![Apps](https://github.com/bramkn/ExactOnline/blob/master/Images/Oauth2n8n.png)
 
 After you can Click connect / reconnect and it might give you a pop-up to login to Exact Online if you aren't logged in yet or you need to confirm the connection.
 
