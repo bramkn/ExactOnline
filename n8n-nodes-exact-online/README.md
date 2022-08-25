@@ -24,9 +24,17 @@ In the future there might be a possibility to simply select it from the app stor
 
 The Images are mostly in Dutch, but should be clear enough for you to follow along.
 
-Login
+Login into Exact Online by clicking on the marked button
 ![Login](https://github.com/bramkn/ExactOnline/blob/master/Images/login.png)
 
+Click on the manage apps button
+![ManageApps](https://github.com/bramkn/ExactOnline/blob/master/Images/manageapps.png)
+
+At this point it will forward you to all the apps you can browse. You probably need to click on login in the top right again to actually login on this page.
+
+After that you will see the manage apps button
+Click on the manage apps button
+![ManageApps2](https://github.com/bramkn/ExactOnline/blob/master/Images/manageapps2.png)
 
 ## Features v1.0
 
