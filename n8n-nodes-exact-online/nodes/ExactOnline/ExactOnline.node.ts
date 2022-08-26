@@ -98,7 +98,7 @@ export class ExactOnline implements INodeType {
 				typeOptions: {
 					minValue: 1,
 				},
-				default: 50,
+				default: 60,
 				description: 'Max number of results to return',
 				displayOptions:{
 					show:	{
