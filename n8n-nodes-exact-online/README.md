@@ -32,9 +32,9 @@ Login into Exact Online by clicking on the marked button
 
 ![Login](https://github.com/bramkn/ExactOnline/blob/master/Images/login.png)
 
-Click on the manage apps button
+Click on appcenter button to open the app center where you can connect apps.
 
-![ManageApps](https://github.com/bramkn/ExactOnline/blob/master/Images/manageapps.png)
+![ManageApps](https://github.com/bramkn/ExactOnline/blob/master/Images/appcenterNormal.png)
 
 At this point it will forward you to all the apps you can browse. You probably need to click on login in the top right again to actually login on this page.
 
@@ -44,6 +44,7 @@ Click on the manage apps button
 ![ManageApps2](https://github.com/bramkn/ExactOnline/blob/master/Images/manageapps2.png)
 
 You will then see your apps. There is a choice between production and test. Click on register an app.
+If you do not have a choice simply klik on the big + to register an app.
 
 ![Apps](https://github.com/bramkn/ExactOnline/blob/master/Images/Apps.png)
 
@@ -53,7 +54,13 @@ Create a new credentials entry or modify an existing one in the app.
 ![Apps](https://github.com/bramkn/ExactOnline/blob/master/Images/credentials.png)
 
 You should see the following information. You need this for the connection in the n8n node.
-Copy the callback URL from n8n into Exact Online. And fill in the rest of the information in the credentials of n8n.
+Copy the callback URL from n8n into Exact Online. 
+
+If you are registering a production app you will need to do this in this first screen that pops up. If it is a testing app this pop-up is skipped. (fill in the name and the callback url in the following screen if this step is skipped)
+
+![prodRegister](https://github.com/bramkn/ExactOnline/blob/master/Images/registerappProd.png)
+
+Fill in the rest of the information in the credentials of n8n.
 Should look a bit like this:
 
 ![Apps](https://github.com/bramkn/ExactOnline/blob/master/Images/oauth2Exact2.png)
