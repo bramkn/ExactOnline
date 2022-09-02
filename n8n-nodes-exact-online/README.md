@@ -64,8 +64,10 @@ If you are registering a production app you will need to do this in this first s
 Fill in the rest of the information in the credentials of n8n.
 Should look a bit like this:
 
+Exact Online:
 ![Apps](https://github.com/bramkn/ExactOnline/blob/master/Images/oauth2Exact2.png)
 
+n8n:
 ![Apps](https://github.com/bramkn/ExactOnline/blob/master/Images/Oauth2n8n2.png)
 
 After you can Click connect / reconnect and it might give you a pop-up to login to Exact Online if you aren't logged in yet or you need to confirm the connection.
