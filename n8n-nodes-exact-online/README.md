@@ -24,7 +24,8 @@ Make sure to restart n8n when you have installed the node.
 ## Setup instructions
 
 > :warning: **You need a HTTPS callback url for it to function. Exact Online does not allow you to use HTTP. Make sure you have this before starting the setup.**
-> :note: Some of the documentation was rewritten because the production app setup is a bit different from the development app. That is also why some names and urls arent the same everywhere, I hope it is clear enough not to get you confused about changing names and such.
+
+> **_NOTE:_**  Some of the documentation was rewritten because the production app setup is a bit different from the development app. That is also why some names and urls arent the same everywhere, I hope it is clear enough not to get you confused about changing names and such.
 
 To setup this node you will have to create an App in Exact online. Below there is a step by step guide on how to do this.
 In the future there might be a possibility to simply select it from the app store of Exact Online. I will be looking into getting it approved at a later date.
