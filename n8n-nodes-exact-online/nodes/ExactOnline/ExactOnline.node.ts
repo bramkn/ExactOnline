@@ -55,7 +55,6 @@ export class ExactOnline implements INodeType {
 				displayName: 'Resource Name or ID',
 				name: 'resource',
 				type: 'options',
-				noDataExpression: true,
 				typeOptions: {
 					loadOptionsDependsOn:['service'],
 					loadOptionsMethod: 'getResources',
@@ -67,7 +66,6 @@ export class ExactOnline implements INodeType {
 				displayName: 'Operation Name or ID',
 				name: 'operation',
 				type: 'options',
-				noDataExpression: true,
 				typeOptions: {
 					loadOptionsDependsOn:['resource'],
 					loadOptionsMethod: 'getOperations',
