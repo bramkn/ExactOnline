@@ -9,6 +9,25 @@ There were 396 pages scraped and processed into a config file.
 The node is usable with a Developer account which can be created for free at Exact Online's website. This way you can test the node however you like it without compromising your production environment.
 After you can easily connect it with a production environment and automate your workflows.
 
+## Developer
+
+Hi, 
+
+My name is Bram and I am the developer of this node.
+I am an independant consultant and expert partner of n8n.
+My nodes are free to use for everyone, but please consider [donating](https://donate.stripe.com/3cs5oe7xM6L77Yc5ko) when you use my nodes.
+This helps me to build and maintain nodes for everyone to use.
+
+If you are looking for some outside help with n8n, I can of course also offer my services.
+* Node Development
+* Workflow Development
+* Mentoring
+* Support
+
+Please contact me @ bram@knitco.nl if you want to make use of my services.
+
+For questions or issues with nodes, please open an issue on Github.
+
 ## Exact Online
 
 Exact Online is an ERP solution that is offered as a cloud service. Most companies that use exact use it as their main application and have all kinds of applications they use around that. Exact has been expanding over the years and they now offer Exact Online internationally.
