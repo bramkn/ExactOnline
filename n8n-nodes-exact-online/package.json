@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-exact-online",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Exact Online Community node for n8n",
   "keywords": [
     "n8n-community-node-package",
@@ -31,7 +31,8 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/ExactOnlineApiOAuth2Api.credentials.js"
+      "dist/credentials/ExactOnlineApiOAuth2Api.credentials.js",
+      "dist/credentials/ExactOnlineApi.credentials.js"
     ],
     "nodes": [
       "dist/nodes/ExactOnline/ExactOnline.node.js"

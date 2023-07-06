@@ -26,7 +26,7 @@ export class ExactOnline implements INodeType {
 		outputs: ['main'],
 		credentials: [
 			{
-				name: 'exactOnlineApiO',
+				name: 'exactOnlineApi',
 				required: true,
 				displayOptions: {
 					show: {
@@ -271,6 +271,37 @@ export class ExactOnline implements INodeType {
 				],
 			},
 			{
+				displayName: 'Manual JSON Body',
+				name: 'useManualBody',
+				type: 'boolean',
+				default: false,
+				displayOptions: {
+					show: {
+						operation:[
+							'post',
+							'put',
+						],
+					},
+				},
+			},
+			{
+				displayName: 'JSON Body',
+				name: 'manualBody',
+				type: 'string',
+				default: '',
+				displayOptions: {
+					show: {
+						operation:[
+							'post',
+							'put',
+						],
+						useManualBody:[
+							true,
+						],
+					},
+				},
+			},
+			{
 				displayName: 'Field Data',
 				name: 'data',
 				placeholder: 'Add field data',
@@ -286,6 +317,9 @@ export class ExactOnline implements INodeType {
 						operation:[
 							'post',
 							'put',
+						],
+						useManualBody:[
+							false,
 						],
 					},
 				},
@@ -462,38 +496,51 @@ export class ExactOnline implements INodeType {
 				}
 
 				if(operation ==='post'){
-					const body: IDataObject = {};
-					const data = this.getNodeParameter('data.field', itemIndex, 0) as IDataObject[];
-					if(!data ){
-						throw new NodeOperationError(this.getNode(), `Please include the fields and values for the item you want to create.`, {
-							itemIndex,
-						});
+					let body: IDataObject = {};
+
+					const useManualBody = this.getNodeParameter('useManualBody', itemIndex, false) as boolean;
+					if(useManualBody){
+						const manualBody = this.getNodeParameter('manualBody', itemIndex, {}) as IDataObject;
+						if(!manualBody){
+							throw new NodeOperationError(this.getNode(), `Please include the fields and values for the item you want to create.`, {
+								itemIndex,
+							});
+						}
+						body = manualBody;
 					}
-					const fieldsEntered = data.map(x=>x.fieldName);
-					const mandatoryFields = await getMandatoryFields.call(this,endpointConfig) as string[];
-					const mandatoryFieldsNotIncluded = mandatoryFields.filter(x=> !fieldsEntered.includes(x));
-					if(mandatoryFieldsNotIncluded.length>0){
-						throw new NodeOperationError(this.getNode(), `The following fields are mandatory and did not get used: '${mandatoryFieldsNotIncluded.join(', ')}'`, {
-							itemIndex,
-						});
-					}
-					if(data.length>0){
-						for(let dataIndex = 0; dataIndex < data.length; dataIndex++){
-							const fieldName = data[dataIndex].fieldName as string;
-							const fieldType = await getFieldType.call(this, endpointConfig,fieldName);
-							const fieldValue =data[dataIndex].fieldValue as string;
-							switch(fieldType){
-								case 'string':
-									body[`${fieldName}`] = fieldValue;
-									break;
-								case 'boolean':
-									body[`${fieldName}`] = (fieldValue.toLocaleLowerCase()==='true') ;
-									break;
-								case 'number':
-									body[`${fieldName}`] = +fieldValue;
-									break;
-								default:
-									break;
+					else{
+						const data = this.getNodeParameter('data.field', itemIndex, 0) as IDataObject[];
+						if(!data ){
+							throw new NodeOperationError(this.getNode(), `Please include the fields and values for the item you want to create.`, {
+								itemIndex,
+							});
+						}
+						const fieldsEntered = data.map(x=>x.fieldName);
+						const mandatoryFields = await getMandatoryFields.call(this,endpointConfig) as string[];
+						const mandatoryFieldsNotIncluded = mandatoryFields.filter(x=> !fieldsEntered.includes(x));
+						if(mandatoryFieldsNotIncluded.length>0){
+							throw new NodeOperationError(this.getNode(), `The following fields are mandatory and did not get used: '${mandatoryFieldsNotIncluded.join(', ')}'`, {
+								itemIndex,
+							});
+						}
+						if(data.length>0){
+							for(let dataIndex = 0; dataIndex < data.length; dataIndex++){
+								const fieldName = data[dataIndex].fieldName as string;
+								const fieldType = await getFieldType.call(this, endpointConfig,fieldName);
+								const fieldValue =data[dataIndex].fieldValue as string;
+								switch(fieldType){
+									case 'string':
+										body[`${fieldName}`] = fieldValue;
+										break;
+									case 'boolean':
+										body[`${fieldName}`] = (fieldValue.toLocaleLowerCase()==='true') ;
+										break;
+									case 'number':
+										body[`${fieldName}`] = +fieldValue;
+										break;
+									default:
+										break;
+								}
 							}
 						}
 					}
@@ -509,31 +556,44 @@ export class ExactOnline implements INodeType {
 							itemIndex,
 						});
 					}
-					const body: IDataObject = {};
-					const data = this.getNodeParameter('data.field', itemIndex, 0) as IDataObject[];
-					if(!data ){
-						throw new NodeOperationError(this.getNode(), `Please include the fields and values for the item you want to create.`, {
-							itemIndex,
-						});
-					}
+					let body: IDataObject = {};
 
-					if(data.length>0){
-						for(let dataIndex = 0; dataIndex < data.length; dataIndex++){
-							const fieldName = data[dataIndex].fieldName as string;
-							const fieldType = await getFieldType.call(this, endpointConfig,fieldName);
-							const fieldValue =data[dataIndex].fieldValue as string;
-							switch(fieldType){
-								case 'string':
-									body[`${fieldName}`] = fieldValue;
-									break;
-								case 'boolean':
-									body[`${fieldName}`] = (fieldValue.toLocaleLowerCase()==='true') ;
-									break;
-								case 'number':
-									body[`${fieldName}`] = +fieldValue;
-									break;
-								default:
-									break;
+					const useManualBody = this.getNodeParameter('useManualBody', itemIndex, false) as boolean;
+					if(useManualBody){
+						const manualBody = this.getNodeParameter('manualBody', itemIndex, {}) as IDataObject;
+						if(!manualBody){
+							throw new NodeOperationError(this.getNode(), `Please include the fields and values for the item you want to edit.`, {
+								itemIndex,
+							});
+						}
+						body = manualBody;
+					}
+					else{
+						const data = this.getNodeParameter('data.field', itemIndex, 0) as IDataObject[];
+						if(!data ){
+							throw new NodeOperationError(this.getNode(), `Please include the fields and values for the item you want to edit.`, {
+								itemIndex,
+							});
+						}
+
+						if(data.length>0){
+							for(let dataIndex = 0; dataIndex < data.length; dataIndex++){
+								const fieldName = data[dataIndex].fieldName as string;
+								const fieldType = await getFieldType.call(this, endpointConfig,fieldName);
+								const fieldValue =data[dataIndex].fieldValue as string;
+								switch(fieldType){
+									case 'string':
+										body[`${fieldName}`] = fieldValue;
+										break;
+									case 'boolean':
+										body[`${fieldName}`] = (fieldValue.toLocaleLowerCase()==='true') ;
+										break;
+									case 'number':
+										body[`${fieldName}`] = +fieldValue;
+										break;
+									default:
+										break;
+								}
 							}
 						}
 					}

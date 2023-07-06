@@ -8,7 +8,7 @@ import {
 export class ExactOnlineApi implements ICredentialType {
 	name = 'exactOnlineApi';
 	icon = 'file:exactOnline.svg';
-	displayName = 'Exact Online API With AccessToken';
+	displayName = 'Exact Online API With AccessToken API';
 	properties: INodeProperties[] = [
 		{
 			displayName: 'Access Token',

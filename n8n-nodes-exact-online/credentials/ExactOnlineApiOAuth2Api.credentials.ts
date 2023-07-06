@@ -93,4 +93,23 @@ export class ExactOnlineApiOAuth2Api implements ICredentialType {
 	},
 	];
 
+	// This credential is currently not used by any node directly
+	// but the HTTP Request node can use it to make requests.
+	// The credential is also testable due to the `test` property below
+	authenticate: IAuthenticateGeneric = {
+		type: 'generic',
+		properties: {
+			headers: {
+			},
+		},
+	};
+
+	// The block below tells how this credential can be tested
+	test: ICredentialTestRequest = {
+		request: {
+			baseURL: 'https://example.com/',
+			url: '',
+		},
+	};
+
 }
