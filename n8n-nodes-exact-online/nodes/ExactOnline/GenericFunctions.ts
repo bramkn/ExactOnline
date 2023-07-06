@@ -22,7 +22,6 @@ export async function exactOnlineApiRequest(
 	nextPageUrl = '',
 	// tslint:disable-next-line:no-any
 ): Promise<any> {
-	const credentials = await this.getCredentials('exactOnlineApiOAuth2Api');
 	let options: OptionsWithUri = {
 		headers: {
 			'Content-Type': 'application/json',
@@ -30,11 +29,32 @@ export async function exactOnlineApiRequest(
 		method,
 		body,
 		qs,
-		uri: `${credentials.url}${uri}`,
+		uri: ``,//`${credentials.url}${uri}`,
 		json: true,
 		//@ts-ignore
 		resolveWithFullResponse: true,
 	};
+
+	const authenticationMethod = this.getNodeParameter(
+		'authentication',
+		0,
+		'accessToken',
+	) as string;
+	let credentialType = '';
+	if (authenticationMethod === 'accessToken') {
+		const credentials = await this.getCredentials('exactOnlineApi');
+		credentialType = 'exactOnlineApi';
+
+		const baseUrl = credentials.url || 'https://start.exactonline.nl';
+		options.uri = `${baseUrl}${uri}`;
+	} else {
+		const credentials = await this.getCredentials('exactOnlineApiOAuth2Api');
+		credentialType = 'exactOnlineApiOAuth2Api';
+
+		const baseUrl = credentials.url || 'https://start.exactonline.nl';
+		options.uri = `${baseUrl}${uri}`;
+	}
+
 	if(nextPageUrl!==''){
 		options.uri = nextPageUrl;
 	}
@@ -50,7 +70,8 @@ export async function exactOnlineApiRequest(
 		};
 
 		//@ts-ignore
-		const response = await this.helpers.requestOAuth2.call(this, 'exactOnlineApiOAuth2Api', options, oAuth2Options);
+		//const response = await this.helpers.requestOAuth2.call(this, 'exactOnlineApiOAuth2Api', options, oAuth2Options);
+		const response =await this.helpers.requestWithAuthentication.call(this, credentialType, options);
 		//@ts-ignore
 		return response;
 	} catch (error) {
