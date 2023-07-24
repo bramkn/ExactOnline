@@ -59,7 +59,7 @@ export class ExactOnline implements INodeType {
 						value: 'oAuth2',
 					},
 				],
-				default: 'accessToken',
+				default: 'oAuth2',
 			},
 			{
 				displayName: 'Division Name or ID',
