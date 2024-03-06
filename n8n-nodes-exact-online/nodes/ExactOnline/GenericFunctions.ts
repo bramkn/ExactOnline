@@ -127,6 +127,11 @@ export async function getAllData(this: IExecuteFunctions | IExecuteSingleFunctio
 			}
 			nextPageUrl = responseData.body.d.__next;
 
+			if(responseData.headers['x-ratelimit-minutely-remaining'] === "0"){
+				var waitTime = (+responseData.headers['x-ratelimit-minutely-reset']) - Date.now();
+				setTimeout(() => {  },  Math.max(0,Math.min(waitTime,60000)));
+			}
+
 		} while ((limit === 0 || returnData.length < limit) && responseData.body.d.__next);
 		if(limit !== 0){
 			return returnData.slice(0,limit);
