@@ -23,7 +23,7 @@ export class ExactOnlineApi implements ICredentialType {
 			default: 'nl',
 			options: [
 					{
-							name: 'Belguim',
+							name: 'Belgium',
 							value: 'be',
 					},
 					{
