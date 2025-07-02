@@ -55311,7 +55311,6 @@
 				"type": "string",
 				"mandatory": false
 			},
-			{ "webhook": true, "filter": true, "name": "DeductibilityPercentages", "mandatory": false },
 			{
 				"webhook": true,
 				"filter": true,
